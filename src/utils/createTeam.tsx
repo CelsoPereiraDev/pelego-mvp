@@ -14,6 +14,17 @@ function calculateTeamScore(team: Player[]): number {
     return team.reduce((total, player) => total + player.overall, 0);
 }
 
+function calculateTeamOverall(team: Player[]): number {
+    const totalOverall = team.reduce((total, player) => total + player.overall, 0);
+    const numberOfPlayers = team.length;
+    if (numberOfPlayers === 0) {
+        return 0; // Evita a divisão por zero
+    }
+    const averageOverall = totalOverall / numberOfPlayers;
+    return Math.round(averageOverall);
+}
+
+
 // Função para distribuir os jogadores entre os times de forma equilibrada
 export function distributePlayers(data: Player[], quantityOfTeams: number): Team[] {
     // Calcular o número de jogadores por time
@@ -39,6 +50,6 @@ export function distributePlayers(data: Player[], quantityOfTeams: number): Team
     // Calcular a pontuação total de cada time e retornar os times com seus overalls
     return teams.map(team => ({
         players: team,
-        overall: calculateTeamScore(team)
+        overall: calculateTeamOverall(team)
     }));
 }
