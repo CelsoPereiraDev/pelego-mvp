@@ -1,56 +1,60 @@
 'use client'
-import '@/app/globals.css'
-import { useEffect, useState } from "react";
-import { distributePlayers, Player, Team } from "@/utils/createTeam";
 
-
-const data: Player[] = [
-  { "name": "2008", "overall": 28, "position": "Midfielder" },
-  { "name": "Adriano", "overall": 49, "position": "Midfielder" },
-  { "name": "Bolsonaro", "overall": 53, "position": "Forward" },
-  { "name": "Celso", "overall": 77, "position": "Defender" },
-  { "name": "Danniboy", "overall": 79, "position": "Goalkeeper" },
-  { "name": "Daro", "overall": 78, "position": "Midfielder" },
-  { "name": "Du", "overall": 53, "position": "Forward" },
-  { "name": "Eric", "overall": 42, "position": "Midfielder" },
-  { "name": "Fer", "overall": 59, "position": "Midfielder" },
-  { "name": "Gabriel", "overall": 59, "position": "Defender" },
-  { "name": "Gabrielzinho", "overall": 54, "position": "Forward" },
-  { "name": "Guilherme", "overall": 27, "position": "Forward" },
-  { "name": "Gustavo", "overall": 55, "position": "Midfielder" },
-  { "name": "Igor", "overall": 55, "position": "Midfielder" },
-  { "name": "João", "overall": 87, "position": "Defender" },
-  { "name": "João da Radio", "overall": 37, "position": "Forward" },
-  { "name": "João Primo", "overall": 65, "position": "Midfielder" },
-  { "name": "Leo", "overall": 41, "position": "Defender" },
-  { "name": "Matheus", "overall": 63, "position": "Goalkeeper" },
-  { "name": "Preto", "overall": 90, "position": "Forward" },
-  { "name": "Tcharlly", "overall": 58, "position": "Midfielder" }
-];
-
+import { useState } from "react";
+import { calculateTeamOverall, hillClimbing, Player, Team } from "@/utils/createTeam"; // Importa a função hillClimbing
 
 export default function Home() {
   const [teams, setTeams] = useState<Team[]>([]);
+  const [inputValue, setInputValue] = useState<string>("");
 
-  useEffect(() => {
-    const result = distributePlayers(data, 3);
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleGenerateTeams = () => {
+    const players: Player[] = inputValue
+      .split(/[\n,]/)
+      .map((entry) => {
+        const [name, overall] = entry.split(":").map((item) => item.trim());
+        return { name, overall: parseInt(overall) || 0 };
+      });
+    const result = hillClimbing(players, 3, 1500);
     setTeams(result);
-  }, []);
+  };
 
   return (
-    <>
-      {teams.map((team, index) => (
-        <div key={index} className="p-4  my-4 bg-white text-black w-fit rounded-lg min-w-[360px]">
-          <p className='mb-4 text-center'>Time {index + 1} Overall:{team.overall}</p>
-          <ul>
-            {team.players.map((player, playerIndex) => ( 
-              <li key={playerIndex}>
-                {player.name}
-              </li>
-            ))}
-          </ul>
+    <div className="h-screen bg-[#212121] p-12">
+      <p className="text-3xl text-center mb-9">Gerador de equipes</p>
+      <div className="flex flex-row gap-12 text-black  ">
+        <div className="flex flex-col items-center space-y-4">
+          <textarea
+            className="p-2 border rounded min-h-[480px] min-w-[480px]"
+            placeholder="Digite os jogadores no formato nome:nota separados por vírgula ou pular linha"
+            rows={5}
+            value={inputValue}
+            onChange={handleInputChange}
+          />
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={handleGenerateTeams}
+          >
+            Gerar Times
+          </button>
         </div>
+        <div>
+        {teams.map((team, index) => (
+  <div key={index} className="p-4 my-4 bg-white text-black w-fit rounded-lg min-w-[360px]">
+    <p className="mb-4 text-center">Time {index + 1}</p>
+    <p className="mb-2 text-center">Pontuação Total: {calculateTeamOverall(team.players)}</p>
+    <ul>
+      {team.players.map((player, playerIndex) => (
+        <li key={playerIndex}>{player.name}</li>
       ))}
-    </>
+    </ul>
+  </div>
+))}
+        </div>
+      </div>
+    </div>
   );
 }
