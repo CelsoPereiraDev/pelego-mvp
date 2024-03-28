@@ -15,6 +15,7 @@ export interface PlayerDataProps {
     country?: string;
     team?: string;
     image?: string;
+    position: string;
 }
 
 export interface StatsProps {
@@ -31,7 +32,7 @@ export function Stats({stat, value}:StatsProps) {
     )
 }
 
-export default function PlayerCard({playerData}:PlayerDataProps) {
+export default function PlayerCard(playerData:PlayerDataProps) {
     return (
       <div className="bg-[url('../../public/bronze.png')] h-[500px] w-[311px] bg-contain bg-center bg-no-repeat text-[#4d331f]">
         <div className="px-8 py-[72px]">
