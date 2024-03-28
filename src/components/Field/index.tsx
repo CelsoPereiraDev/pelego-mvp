@@ -16,7 +16,7 @@ export default function Field( { team }:any) {
   const playerGroups = chunkArray(team.players, [3, 2, 2]);
 
   return (
-    <div className="bg-[url('../../public/field.jpg')] h-[630px] w-[400px] bg-contain bg-center bg-no-repeat">
+    <div className="bg-[url('../../public/new_field.jpg')] h-[870px] w-[559px] bg-cover bg-center bg-no-repeat">
       <div className="flex flex-col h-full justify-end items-center gap-14 pb-[100px]">
         {playerGroups.map((playersInGroup, groupIndex) => (
           <div key={groupIndex} className="flex flex-row gap-10 justify-center w-[92%]">

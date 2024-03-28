@@ -59,11 +59,13 @@ export default function Home() {
               Gerar Times com Mock
             </button>
           </div>
-          <div className="flex flex-row items-center space-x-4 w-full justify-around">
+          <div className="flex flex-col items-center space-x-2 w-full justify-around">
             {teams.map((team, index) => (
-              <div key={index} className="p-4 my-4 bg-white text-black w-fit rounded-lg min-w-[360px]">
-                <p className="mb-4 text-center">Time {index + 1}</p>
+              <div key={index} className="p-2 pb-8 my-2 bg-white text-black w-fit rounded-lg min-w-[360px]">
+                <div className="flex flex-row justify-center w-full gap-8">
+                <p className="mb-2 text-center">Time {index + 1}</p>
                 <p className="mb-2 text-center">Overall: {calculateTeamOverall(team.players)}</p>
+                </div>
                 <Field team={team} />
               </div>
             ))}
