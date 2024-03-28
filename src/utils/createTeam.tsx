@@ -1,6 +1,18 @@
 export interface Player {
     name: string;
-    overall: number;
+    overall: {
+        pace?: string;
+        shooting?: string;
+        passing?: string;
+        dribble?: string;
+        defense?: string;
+        physics?: string;
+        overall: number;
+    };
+    country?: string;
+    team?: string | object;
+    image?: string | object;
+    position?: string;
 }
 
 export interface Team {
@@ -10,11 +22,11 @@ export interface Team {
 
 // Função para calcular a pontuação total de um time
 function calculateTeamScore(team: Player[]): number {
-    return team.reduce((total, player) => total + player.overall, 0);
+    return team.reduce((total, player) => total + player.overall.overall, 0);
 }
 
 export function calculateTeamOverall(team: Player[]): number {
-    const totalOverall = team.reduce((total, player) => total + player.overall, 0);
+    const totalOverall = team.reduce((total, player) => total + player.overall.overall, 0);
     const numberOfPlayers = team.length;
     if (numberOfPlayers === 0) {
         return 0; // Evita a divisão por zero
@@ -92,7 +104,7 @@ export function distributePlayers(data: Player[], quantityOfTeams: number): Team
     const teams: Player[][] = new Array(quantityOfTeams).fill([]).map(() => []);
 
     // Ordenar os jogadores pelo overall (do melhor para o pior)
-    const sortedPlayers = data.slice().sort((a, b) => b.overall - a.overall);
+    const sortedPlayers = data.slice().sort((a, b) => b.overall.overall - a.overall.overall);
 
     // Selecionar o melhor jogador possível para cada equipe
     for (let i = 0; i < quantityOfTeams; i++) {
@@ -110,7 +122,7 @@ export function distributePlayers(data: Player[], quantityOfTeams: number): Team
             let bestFitIndex = -1;
             let smallestDifference = Infinity;
             for (let k = 0; k < sortedPlayers.length; k++) {
-                const difference = Math.abs(sortedPlayers[k].overall - teamOverall);
+                const difference = Math.abs(sortedPlayers[k].overall.overall - teamOverall);
                 if (difference < smallestDifference && !teams.flat().includes(sortedPlayers[k])) {
                     bestFitIndex = k;
                     smallestDifference = difference;
