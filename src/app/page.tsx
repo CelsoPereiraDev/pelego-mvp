@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { calculateTeamOverall, hillClimbing, Player, Team } from "@/utils/createTeam";
 import Field from "@/components/Field";
-import { NH } from "@/utils/images";
 import PlayerMock from "@/utils/mockPlayers";
 
 export default function Home() {
