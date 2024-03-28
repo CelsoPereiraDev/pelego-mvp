@@ -24,17 +24,7 @@ export interface StatsProps {
     stat: string;
     value: string;
 }
-
-export function Stats({stat, value}:StatsProps) {
-    return (
-        <div className="flex flex-row gap-2 text-2xl">
-            <span>{value}</span>
-            <span>{stat}</span>
-        </div>
-    )
-}
-
-export function Badge({ playerData, children }) {
+ function Badge({ playerData, children }) {
     if (playerData.overall.overall < 65) {
         return (
             <div className={"bg-[url('../../public/bronze_small.png')] h-[160px] w-[109px] bg-contain bg-center bg-no-repeat text-[#4d331f]"}>
