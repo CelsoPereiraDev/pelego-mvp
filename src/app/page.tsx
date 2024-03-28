@@ -59,7 +59,7 @@ export default function Home() {
               Gerar Times com Mock
             </button>
           </div>
-          <div className="flex flex-col items-center space-x-2 w-full justify-around">
+          <div className="flex flex-row items-center space-x-2 w-full justify-around">
             {teams.map((team, index) => (
               <div key={index} className="p-2 pb-8 my-2 bg-white text-black w-fit rounded-lg min-w-[360px]">
                 <div className="flex flex-row justify-center w-full gap-8">
