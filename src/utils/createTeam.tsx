@@ -13,11 +13,14 @@ export interface Player {
     team?: string | object;
     image?: string | object;
     position?: string;
+    value: string;
+    label:string;
 }
 
 export interface Team {
     players: Player[];
     overall: number;
+    id: number; 
 }
 
 // Função para calcular a pontuação total de um time
@@ -61,7 +64,7 @@ function calculateTeamScoreDifference(teams: Team[]): number {
 
 function perturbSolution(solution: Team[]): Team[] {
     // Clona a solução atual
-    const newSolution = solution.map(team => ({ players: [...team.players], overall: team.overall }));
+    const newSolution = solution.map(team => ({ id: team.id, players: [...team.players], overall: team.overall }));
 
     // Escolhe duas equipes aleatórias
     const [teamIndex1, teamIndex2] = getRandomIndices(newSolution.length);
@@ -77,6 +80,7 @@ function perturbSolution(solution: Team[]): Team[] {
 
     return newSolution;
 }
+
 
 function getRandomIndex(length: number): number {
     return Math.floor(Math.random() * length);
@@ -135,7 +139,8 @@ export function distributePlayers(data: Player[], quantityOfTeams: number): Team
     }
 
     // Calcular a pontuação total de cada time e retornar os times com seus overalls
-    return teams.map(team => ({
+    return teams.map((team, index) => ({
+        id: index,
         players: team,
         overall: calculateTeamOverall(team)
     }));
