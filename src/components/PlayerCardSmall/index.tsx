@@ -18,6 +18,7 @@ export interface PlayerDataProps {
         image?: string;
         position: string;
     }
+    showOverall: boolean;
 }
 
 export interface StatsProps {
@@ -49,7 +50,7 @@ export interface StatsProps {
     
 
 
-export default function PlayerCardSmall({playerData}:PlayerDataProps) {
+export default function PlayerCardSmall({playerData, showOverall}:PlayerDataProps) {
     return (
         <>  
             <Badge playerData={playerData}>
@@ -57,7 +58,7 @@ export default function PlayerCardSmall({playerData}:PlayerDataProps) {
                     <div className="flex flex-row h-[90px]">
                         <div className="flex flex-col items-center">
                             <div className="flex flex-col justify-center w-min items-center ">
-                                <div className="text-2xl leading-[10px]">{playerData?.overall?.overall}</div>
+                            <div className="text-2xl leading-[10px] min-h-[10px]">{!!showOverall ? (playerData?.overall?.overall) : ''}</div>
                                 <span className="text-sm text-center w-minleading-2 pt-1">{playerData.position}</span>
                             </div>
                             <div>

@@ -1,7 +1,7 @@
 import { Player, Team } from "@/utils/createTeam";
 import PlayerCardSmall from "../PlayerCardSmall";
 
-export default function Field({ team }: { team: Team }): JSX.Element {
+export default function Field({ team, showOverall }: { team: Team, showOverall:boolean }): JSX.Element {
   const chunkArray = (players: Player[], size: number) => {
     const chunkedArray: Player[][] = [];
     for (let i = 0; i < players.length; i += size) {
@@ -42,7 +42,7 @@ export default function Field({ team }: { team: Team }): JSX.Element {
         {playerGroups.map((playersInGroup, groupIndex) => (
           <div key={groupIndex} className="flex flex-row gap-10 justify-center w-[92%]">
             {playersInGroup.map((playerData, index) => (
-              <PlayerCardSmall key={index} playerData={playerData} />
+              <PlayerCardSmall key={index} playerData={playerData} showOverall={showOverall}/>
             ))}
           </div>
         ))}

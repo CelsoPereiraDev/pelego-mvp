@@ -9,16 +9,7 @@ import Select from 'react-select'
 export default function Home() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(event.target.value);
-  };
-
-  const handleGenerateTeamsWithMock = () => {
-    const result = hillClimbing(data, 3, 5000);
-    setTeams(result);
-  };
+  const [showOverall, setShowOverall] = useState(true);
 
   const handleGenerateTeams = () => {
     const result = hillClimbing(selectedPlayers, 3, 5000);
@@ -29,7 +20,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="h-screen bg-[#212121] p-12">
+      <div className="min-h-screen h-full bg-[#212121] p-12">
         <p className="text-3xl text-center mb-9">Gerador de equipes</p>
         <div className="flex flex-col gap-12 text-black  ">
           <div className="flex flex-col items-center space-y-4">
@@ -38,7 +29,11 @@ export default function Home() {
               options={data}
               value={selectedPlayers}
               onChange={(selectedOptions: any) => setSelectedPlayers(selectedOptions)}
-            />
+            />         
+            <div>
+              <input type="checkbox" id="showOverall" name="ShowOverall" checked={showOverall} onChange={() => setShowOverall(!showOverall)}/>
+              <label className="text-xl text-center text-white ml-2" htmlFor="ShowOverall">Mostrar Overall</label>
+            </div>
             <button
               className="px-4 py-2 bg-blue-500 text-white rounded"
               onClick={handleGenerateTeams}>
@@ -52,7 +47,7 @@ export default function Home() {
                 <p className="mb-2 text-center">Time {index + 1}</p>
                 <p className="mb-2 text-center">Overall: {calculateTeamOverall(team.players)}</p>
                 </div>
-                <Field team={team} />
+                <Field team={team} showOverall={showOverall}/>
               </div>
             ))}
           </div>
