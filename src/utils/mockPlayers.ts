@@ -1,4 +1,4 @@
-import { NH } from "./images"
+import { GarfinhoImage, NH } from "./images"
 
 export default function PlayerMock() {
     return(
@@ -14,7 +14,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 28 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'2008',
+                "value":'2008',
                 "team": "", 
                 "image": "", 
                 "position": "MEI" 
@@ -30,7 +32,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 61 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Adriano',
+                "value":'Adriano', 
                 "team": "", 
                 "image": '', 
                 "position": "ATK" 
@@ -46,7 +50,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 53 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Bolsonaro',
+                "value":'Bolsonaro', 
                 "team": "", 
                 "image": "", 
                 "position": "DEF" 
@@ -62,7 +68,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 77 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Celso',
+                "value":'Celso', 
                 "team": NH, 
                 "image": "", 
                 "position": "ATK" 
@@ -78,9 +86,11 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 79 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Danniboy',
+                "value":'Danniboy', 
                 "team": "", 
-                "image": "", 
+                "image": GarfinhoImage, 
                 "position": "ATK" 
             },
             { 
@@ -94,7 +104,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 46 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Daro',
+                "value":'Daro', 
                 "team": "", 
                 "image": "", 
                 "position": "MEI" 
@@ -110,7 +122,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 53 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Du',
+                "value":'Du', 
                 "team": "", 
                 "image": "", 
                 "position": "DEF" 
@@ -126,7 +140,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 83 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Clev',
+                "value":'Clev', 
                 "team": "", 
                 "image": "", 
                 "position": "ATK" 
@@ -142,7 +158,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 59 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Fer',
+                "value":'Fer', 
                 "team": NH, 
                 "image": "", 
                 "position": "MEI" 
@@ -158,7 +176,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 59 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Gabriel',
+                "value":'Gabriel', 
                 "team": "", 
                 "image": "", 
                 "position": "MEI" 
@@ -174,7 +194,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 54 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Gabrielzin',
+                "value":'Gabrielzin', 
                 "team": NH, 
                 "image": "", 
                 "position": "MEI" 
@@ -190,7 +212,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 33 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Guilherme',
+                "value":'Guilherme', 
                 "team": "", 
                 "image": "", 
                 "position": "DEF" 
@@ -206,7 +230,9 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 55 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Gustavo',
+                "value":'Gustavo', 
                 "team": "", 
                 "image": "", 
                 "position": "ATK" 
@@ -222,13 +248,15 @@ export default function PlayerMock() {
                     "physics": "", 
                     "overall": 55 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Igor',
+                "value":'Igor', 
                 "team": NH, 
                 "image": "", 
                 "position": "DEF" 
             },
             { 
-                "name": "Jonathan", 
+                "name": "Leo", 
                 "overall": { 
                     "pace": "", 
                     "shooting": "", 
@@ -236,9 +264,11 @@ export default function PlayerMock() {
                     "dribble": "", 
                     "defense": "", 
                     "physics": "", 
-                    "overall": 59 
+                    "overall": 75 
                 }, 
-                "country": "", 
+                "country": "",
+                "label":'Leo',
+                "value":'Leo', 
                 "team": "", 
                 "image": "", 
                 "position": "MEI" 
@@ -254,13 +284,15 @@ export default function PlayerMock() {
                   "physics": "", 
                   "overall": 37 
               }, 
-              "country": "", 
+              "country": "",
+             "label":'João da R',
+             "value":'João da R', 
               "team": "", 
               "image": "", 
               "position": "ATK" 
           },
           { 
-              "name": "Narnia", 
+              "name": "Renan", 
               "overall": { 
                   "pace": "", 
                   "shooting": "", 
@@ -268,9 +300,11 @@ export default function PlayerMock() {
                   "dribble": "", 
                   "defense": "", 
                   "physics": "", 
-                  "overall": 24 
+                  "overall": 71
               }, 
-              "country": "", 
+              "country": "",
+              "label":'Renan',
+              "value":'Renan', 
               "team": "", 
               "image": "", 
               "position": "ATK" 
@@ -286,7 +320,9 @@ export default function PlayerMock() {
                   "physics": "", 
                   "overall": 95 
               }, 
-              "country": "", 
+              "country": "",
+              "label":'Denis',
+              "value":'Denis', 
               "team": "", 
               "image": "", 
               "position": "MEI" 
@@ -302,7 +338,9 @@ export default function PlayerMock() {
                   "physics": "", 
                   "overall": 63 
               }, 
-              "country": "", 
+              "country": "",
+                "label":'Matheus',
+                "value":'Matheus', 
               "team": "", 
               "image": "", 
               "position": "DEF" 
@@ -318,7 +356,9 @@ export default function PlayerMock() {
                   "physics": "", 
                   "overall": 90 
               }, 
-              "country": "", 
+              "country": "",
+                "label":'Preto',
+                "value":'Preto', 
               "team": NH, 
               "image": "", 
               "position": "MEI" 
@@ -334,7 +374,9 @@ export default function PlayerMock() {
                   "physics": "", 
                   "overall": 44 
               }, 
-              "country": "", 
+              "country": "",
+                "label":'Tonin',
+                "value":'Tonin', 
               "team": NH, 
               "image": "", 
               "position": "DEF" 
