@@ -1,3 +1,4 @@
+'use client'
 import Image from "next/image";
 import flagImage from "@/../public/flag.webp"
 
@@ -32,40 +33,67 @@ export function Stats({stat, value}:StatsProps) {
     )
 }
 
-export default function PlayerCard(playerData:PlayerDataProps) {
+
+function Badge({ playerData, children }) {
+    console.log("🚀 ~ Badge ~ playerData:", playerData)
+    if (playerData.overall.overall < 65) {
+        return (
+            <div className={"bg-[url('../../public/bronze.png')] h-[500px] w-[311px] bg-contain bg-center bg-no-repeat text-[#4d331f]"}>
+                {children}
+            </div>
+        );
+    } else if (playerData.overall.overall < 74) {
+        return (
+            <div className={"bg-[url('../../public/silver.png')] h-[500px] w-[311px] bg-contain bg-center bg-no-repeat text-[#4d331f]"}>
+                {children}
+            </div>
+        );
+    } else {
+        return (
+            <div className={"bg-[url('../../public/gold.png')] h-[500px] w-[311px] bg-contain bg-center bg-no-repeat text-[#4d331f]"}>
+                {children}
+            </div>
+        );
+    }
+}
+export default function PlayerCard({ playerData }:PlayerDataProps) {
     return (
-      <div className="bg-[url('../../public/bronze.png')] h-[500px] w-[311px] bg-contain bg-center bg-no-repeat text-[#4d331f]">
+      <Badge playerData={playerData}>
         <div className="px-8 py-[72px]">
             <div className="flex flex-row h-[195px]">
                 <div>
                     <div className="flex flex-col justify-center w-min items-center ">
-                        <div className="text-6xl leading-10">94</div>
-                        <span className="text-2xl text-center w-min leading-6 pt-1">RW</span>
+                        <div className="text-6xl leading-10">{playerData?.overall?.overall}</div>
+                        <span className="text-2xl text-center w-min leading-6 pt-1">{playerData.position}</span>
                     </div>
                     
                     <div>
                         <div className="w-[54px] flex justify-center py-2 pl-2">
-                            <Image src={flagImage} alt="flag" width={44} height={22}/>
+                            {playerData.country ? (
+                                        <Image src={playerData.country} alt="flag" width={48} height={22} />
+                                    ) : (
+                                        <Image src={flagImage} alt="flag" width={48} height={22}/>
+                                    )}
                         </div>
-                        <div>Time do Corno</div>
+                        {playerData.team && <div className="pt-[6px] ml-1"><Image src={playerData.team} alt="flag" width={48} height={48} /></div>}
                     </div>
                 </div>
-                <div>Image do corno</div>
+                <div>{playerData.image && <Image src={playerData.image} alt="flag" width={26} height={26} />}</div>
             </div>
-            <div className="text-center py-3 text-4xl">CORNO</div>
+            <div className="text-center py-3 text-4xl">{playerData.name}</div>
             <div className="flex flex-row gap-16 justify-between">
                 <div>
-                    <Stats stat="PAC" value="87"/>
-                    <Stats stat="SHO" value="87"/>
-                    <Stats stat="PAS" value="87"/>
+                    <Stats stat="PAC" value={playerData.overall?.pace}/>
+                    <Stats stat="SHO" value={playerData.overall?.shooting}/>
+                    <Stats stat="PAS" value={playerData.overall?.passing}/>
                 </div>
                 <div>
-                    <Stats stat="DRI" value="87"/>
-                    <Stats stat="DEF" value="87"/>
-                    <Stats stat="PHY" value="87"/>
+                    <Stats stat="DRI" value={playerData.overall?.dribble}/>
+                    <Stats stat="DEF" value={playerData.overall?.defense}/>
+                    <Stats stat="PHY" value={playerData.overall?.physics}/>
                 </div>
             </div>
         </div>
-      </div>
+      </Badge>
     );
   }
