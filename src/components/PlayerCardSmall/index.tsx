@@ -53,7 +53,7 @@ export default function PlayerCardSmall({playerData}:PlayerDataProps) {
     return (
         <>  
             <Badge playerData={playerData}>
-                <div className="px-3 py-7">
+                <div className="pl-3 py-7">
                     <div className="flex flex-row h-[90px]">
                         <div className="flex flex-col items-center">
                             <div className="flex flex-col justify-center w-min items-center ">
@@ -72,9 +72,9 @@ export default function PlayerCardSmall({playerData}:PlayerDataProps) {
                                 
                             </div>
                         </div>
-                        <div className="text-xs">{playerData.image && <Image src={playerData.image} alt="flag" width={26} height={26} />}</div>
+                        <div className="h-full pb-[1px]">{playerData.image && <Image  className="h-full w-full" src={playerData.image} alt="flag" width={160} height={160} />}</div>
                     </div>
-                    <div className="text-center pt-[3px] text-sm">{playerData.name}</div>
+                    <div className="text-center pt-[3px] pr-3 text-sm">{playerData.name}</div>
                 </div>
             </Badge>
         </>
