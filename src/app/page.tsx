@@ -5,16 +5,57 @@ import { calculateTeamOverall, hillClimbing, Player, Team } from "@/utils/create
 import Field from "@/components/Field";
 import PlayerMock from "@/utils/mockPlayers";
 import Select from 'react-select'
+import MultipleStopIcon from '@mui/icons-material/MultipleStop';
 
 export default function Home() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
   const [showOverall, setShowOverall] = useState(true);
+  const [firstPlayerToTrade, setFirstPlayerToTrade] = useState<Player[]>([]);
+  const [secondPlayerToTrade, setSecondPlayerToTrade] = useState<Player[]>([]);
+  
 
   const handleGenerateTeams = () => {
     const result = hillClimbing(selectedPlayers, 3, 5000);
     setTeams(result);
   };
+
+  const handleTradePlayersBetweenTeams = () => {
+    const firstPlayerCurrentTeam = teams.find(team =>
+      team.players.some(player => player.name === firstPlayerToTrade.value.name)
+    );
+  
+    const secondPlayerCurrentTeam = teams.find(team =>
+      team.players.some(player => player.name === secondPlayerToTrade.value.name)
+    );
+  
+    if (!firstPlayerCurrentTeam || !secondPlayerCurrentTeam) {
+      console.log("Ambos os jogadores devem estar em times diferentes.");
+      return;
+    }
+  
+    const firstPlayerTeamIndex = teams.findIndex(team => team === firstPlayerCurrentTeam);
+    const secondPlayerTeamIndex = teams.findIndex(team => team === secondPlayerCurrentTeam);
+
+    let updatedFirstPlayerTeam = {
+      ...firstPlayerCurrentTeam,
+      players: firstPlayerCurrentTeam.players.filter(player => player.name !== firstPlayerToTrade.value.name)
+    };
+    let updatedSecondPlayerTeam = {
+      ...secondPlayerCurrentTeam,
+      players: secondPlayerCurrentTeam.players.filter(player => player.name !== secondPlayerToTrade.value.name)
+    };
+
+    updatedFirstPlayerTeam.players.push(secondPlayerToTrade.value);
+    updatedSecondPlayerTeam.players.push(firstPlayerToTrade.value);
+
+    const updatedTeams = [...teams];
+    updatedTeams[firstPlayerTeamIndex] = updatedFirstPlayerTeam;
+    updatedTeams[secondPlayerTeamIndex] = updatedSecondPlayerTeam;
+  
+    setTeams(updatedTeams);
+  };
+  
 
   const data: Player[] = PlayerMock();
 
@@ -39,6 +80,31 @@ export default function Home() {
               onClick={handleGenerateTeams}>
               Gerar Times
             </button>
+            {teams.length !== 0 && (
+              <> 
+                <div className="flex flex-row gap-4 items-center">
+                <Select
+                    value={firstPlayerToTrade}
+                    onChange={(option: any) => setFirstPlayerToTrade(option)}
+                    options={selectedPlayers.map(player => ({ label: player.name, value: player }))}
+                    placeholder="Selecione o primeiro jogador para troca"
+                  />
+                  <MultipleStopIcon className="text-white"/>
+                  <Select
+                    value={secondPlayerToTrade}
+                    onChange={(option: any) => setSecondPlayerToTrade(option)}
+                    options={selectedPlayers.map(player => ({ label: player.name, value: player }))}
+                    placeholder="Selecione o segundo jogador para troca"
+                  />
+                </div>
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded"
+                  onClick={handleTradePlayersBetweenTeams}
+                  >
+                  Trocar Jogadores
+                </button>
+              </>
+            )}
           </div>
           <div className="flex flex-row items-center space-x-2 w-full justify-around">
             {teams.map((team, index) => (
