@@ -6,7 +6,7 @@ import PlayerMock from "@/utils/mockPlayers";
 
 export default function AllPlayersPage() {
     const data: Player[] = PlayerMock();
-    console.log("🚀 ~ data:", data)
+
     return (
         <div className="h-screen bg-[#212121] w-screen flex justify-start flex-col p-12 items-center gap-7">
             <h1 className="text-3xl text-center mb-9">Jogadores</h1>
