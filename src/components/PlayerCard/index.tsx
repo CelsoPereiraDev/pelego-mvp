@@ -35,7 +35,6 @@ export function Stats({stat, value}:StatsProps) {
 
 
 function Badge({ playerData, children }) {
-    console.log("🚀 ~ Badge ~ playerData:", playerData)
     if (playerData.overall.overall < 65) {
         return (
             <div className={"bg-[url('../../public/bronze.png')] h-[500px] w-[311px] bg-contain bg-center bg-no-repeat text-[#4d331f]"}>
@@ -63,12 +62,12 @@ export default function PlayerCard({ playerData }:PlayerDataProps) {
             <div className="flex flex-row h-[195px]">
                 <div>
                     <div className="flex flex-col justify-center w-min items-center ">
-                        <div className="text-6xl leading-10">{playerData?.overall?.overall}</div>
-                        <span className="text-2xl text-center w-min leading-6 pt-1">{playerData.position}</span>
+                        <div className="text-6xl leading-10 min-h-10">{playerData?.overall?.overall}</div>
+                        <span className="text-2xl text-center w-min leading-6 pt-1 min-h-7 mr-[8px]">{playerData.position}</span>
                     </div>
                     
-                    <div>
-                        <div className="w-[54px] flex justify-center py-2 pl-2">
+                    <div className="h-[45px] mt-[3px]">
+                        <div className="w-[54px] flex justify-center pt-[6px] ml-[5px]">
                             {playerData.country ? (
                                         <Image src={playerData.country} alt="flag" width={48} height={22} />
                                     ) : (
@@ -80,7 +79,7 @@ export default function PlayerCard({ playerData }:PlayerDataProps) {
                 </div>
                 <div>{playerData.image && <Image src={playerData.image} alt="flag" width={26} height={26} />}</div>
             </div>
-            <div className="text-center py-3 text-4xl">{playerData.name}</div>
+            <div className="text-center py-3 text-4xl min-h-[64px]">{playerData.name}</div>
             <div className="flex flex-row gap-16 justify-between">
                 <div>
                     <Stats stat="PAC" value={playerData.overall?.pace}/>
