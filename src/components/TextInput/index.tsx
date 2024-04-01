@@ -1,0 +1,30 @@
+import React from 'react';
+
+interface TextInputProps {
+    label: string;
+    errorMessage?: string;
+    width?: string;
+    value?: string;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default function TextInput({ label, errorMessage, width, value, onChange }: TextInputProps) {
+
+    const borderColor = errorMessage ? 'border-red-600' : 'border-black';
+
+    return (
+        <div className="flex flex-row items-end gap-2 justify-between min-w-min">
+            <label>{label}</label>
+            <div className="flex flex-col gap-[2px]"> 
+                <input
+                    className={`border-[1px] ${borderColor} w-[${width}]`}
+                    value={value}
+                    onChange={onChange}
+                />
+                {errorMessage &&
+                    <span className="text-xs text-red-600 font-light text-center">{errorMessage}</span>
+                }
+            </div>
+        </div>
+    );
+}
