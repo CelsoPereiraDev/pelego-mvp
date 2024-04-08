@@ -70,7 +70,8 @@ export default function Home() {
               options={data}
               value={selectedPlayers}
               onChange={(selectedOptions: any) => setSelectedPlayers(selectedOptions)}
-            />         
+            />
+            <span className="text-white">Jogadores selecionados: {selectedPlayers.length}</span>         
             <div>
               <input type="checkbox" id="showOverall" name="ShowOverall" checked={showOverall} onChange={() => setShowOverall(!showOverall)}/>
               <label className="text-xl text-center text-white ml-2" htmlFor="ShowOverall">Mostrar Overall</label>
@@ -106,7 +107,7 @@ export default function Home() {
               </>
             )}
           </div>
-          <div className="flex flex-row items-center space-x-2 w-full justify-around">
+          <div className="flex flex-row items-center space-x-2 w-full justify-around max-w-[1900px] self-center flex-wrap">
             {teams.map((team, index) => (
               <div key={index} className="p-2 pb-8 my-2 bg-white text-black w-fit rounded-lg min-w-[360px]">
                 <div className="flex flex-row justify-center w-full gap-8">
