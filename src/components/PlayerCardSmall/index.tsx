@@ -59,7 +59,7 @@ export default function PlayerCardSmall({playerData, showOverall}:PlayerDataProp
                         <div className="flex flex-col items-center">
                             <div className="flex flex-col justify-center w-min items-center ">
                             <div className="text-2xl leading-[10px] min-h-[10px]">{!!showOverall ? (playerData?.overall?.overall) : ''}</div>
-                                <span className="text-sm text-center w-minleading-2 pt-1">{playerData.position}</span>
+                                <span className="text-sm text-center w-minleading-2 pt-1">{playerData.position.toUpperCase()}</span>
                             </div>
                             <div>
                                 <div className="">
@@ -75,7 +75,7 @@ export default function PlayerCardSmall({playerData, showOverall}:PlayerDataProp
                         </div>
                         <div className="h-full pb-[1px]">{playerData.image && <Image  className="h-full w-full" src={playerData.image} alt="flag" width={160} height={160} />}</div>
                     </div>
-                    <div className="text-center pt-[3px] pr-3 text-sm">{playerData.name}</div>
+                    <div className="text-center pt-[3px] pr-3 text-sm">{playerData.name.toUpperCase()}</div>
                 </div>
             </Badge>
         </>
