@@ -30,17 +30,17 @@ export default function Field({ team, showOverall }: { team: Team, showOverall:b
   const positions = ['ATK', 'MEI', 'DEF'];
   positions.forEach(position => {
     const players = groupedPlayers[position];
-    const chunkedPlayers = chunkArray(players, 3);
+    const chunkedPlayers = chunkArray(players, 5);
     playerGroups.push(...chunkedPlayers);
   });
 
-  const gapValue = playerGroups.length === 4 ? 7 : 14;
+  const gapValue = playerGroups.length === 4 ? 7 : 12;
 
   return (
     <div className="bg-[url('../../public/new_field.jpg')] h-[870px] w-[559px] bg-cover bg-center bg-no-repeat">
-      <div className={`flex flex-col h-full justify-end items-center gap-${gapValue} pb-[100px]`}>
+      <div className={`flex flex-col h-full justify-end gap-${gapValue} pb-[100px]`}>
         {playerGroups.map((playersInGroup, groupIndex) => (
-          <div key={groupIndex} className="flex flex-row gap-10 justify-center w-[92%]">
+          <div key={groupIndex} className="flex flex-row justify-around">
             {playersInGroup.map((playerData, index) => (
               <PlayerCardSmall key={index} playerData={playerData} showOverall={showOverall}/>
             ))}
