@@ -10,15 +10,21 @@ import MultipleStopIcon from '@mui/icons-material/MultipleStop';
 export default function Home() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
+  const [quantityTeams, setQuantityTeams] = useState([]);
   const [showOverall, setShowOverall] = useState(true);
   const [firstPlayerToTrade, setFirstPlayerToTrade] = useState<Player[]>([]);
   const [secondPlayerToTrade, setSecondPlayerToTrade] = useState<Player[]>([]);
   
 
+
+
+  const quantityTeamsValue = typeof quantityTeams === 'number' ? quantityTeams : 2;
+
   const handleGenerateTeams = () => {
-    const result = hillClimbing(selectedPlayers, 3, 5000);
+    const result = hillClimbing(selectedPlayers, quantityTeamsValue, 10000);
     setTeams(result);
   };
+
 
   const handleTradePlayersBetweenTeams = () => {
     const firstPlayerCurrentTeam = teams.find(team =>
@@ -59,6 +65,18 @@ export default function Home() {
 
   const data: Player[] = PlayerMock();
 
+  const quantityTeamsData = [
+    {
+      label: 2,
+      value: 2,
+    },
+    {
+      label: 3,
+      value: 3,
+    },
+    
+  ]
+
   return (
     <>
       <div className="min-h-screen h-full bg-[#212121] p-12">
@@ -75,6 +93,11 @@ export default function Home() {
             <div>
               <input type="checkbox" id="showOverall" name="ShowOverall" checked={showOverall} onChange={() => setShowOverall(!showOverall)}/>
               <label className="text-xl text-center text-white ml-2" htmlFor="ShowOverall">Mostrar Overall</label>
+              <Select
+              options={quantityTeamsData}
+              value={quantityTeams}
+              onChange={(selectedOptions: any) => setQuantityTeams(selectedOptions)}
+            />
             </div>
             <button
               className="px-4 py-2 bg-blue-500 text-white rounded"
