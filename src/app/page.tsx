@@ -10,18 +10,19 @@ import MultipleStopIcon from '@mui/icons-material/MultipleStop';
 export default function Home() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
-  const [quantityTeams, setQuantityTeams] = useState([]);
+  const [quantityTeams, setQuantityTeams] = useState<number | null>(null);
   const [showOverall, setShowOverall] = useState(true);
   const [firstPlayerToTrade, setFirstPlayerToTrade] = useState<Player[]>([]);
   const [secondPlayerToTrade, setSecondPlayerToTrade] = useState<Player[]>([]);
   
 
-
-
-  const quantityTeamsValue = typeof quantityTeams === 'number' ? quantityTeams : 2;
-
   const handleGenerateTeams = () => {
-    const result = hillClimbing(selectedPlayers, quantityTeamsValue, 10000);
+    if (!quantityTeams) {
+      console.log("Selecione a quantidade de times.");
+      return;
+    }
+  
+    const result = hillClimbing(selectedPlayers, quantityTeams, 10000);
     setTeams(result);
   };
 
@@ -94,10 +95,10 @@ export default function Home() {
               <input type="checkbox" id="showOverall" name="ShowOverall" checked={showOverall} onChange={() => setShowOverall(!showOverall)}/>
               <label className="text-xl text-center text-white ml-2" htmlFor="ShowOverall">Mostrar Overall</label>
               <Select
-              options={quantityTeamsData}
-              value={quantityTeams}
-              onChange={(selectedOptions: any) => setQuantityTeams(selectedOptions)}
-            />
+                options={quantityTeamsData}
+                value={quantityTeamsData.find(option => option.value === quantityTeams)}
+                onChange={(selectedOption: any) => setQuantityTeams(selectedOption.value)}
+              />
             </div>
             <button
               className="px-4 py-2 bg-blue-500 text-white rounded"
