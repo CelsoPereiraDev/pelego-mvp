@@ -1,23 +1,7 @@
-export interface Player {
-    name: string;
-    overall: {
-        pace?: string;
-        shooting?: string;
-        passing?: string;
-        dribble?: string;
-        defense?: string;
-        physics?: string;
-        overall: number;
-    };
-    country?: string;
-    team?: string | object;
-    image?: string | object;
-    position?: string;
-    value: string;
-    label:string;
-}
+import { Player } from "@/types/player";
 
-export interface Team {
+
+interface Team {
     players: Player[];
     overall: number;
     id: number; 
@@ -80,7 +64,6 @@ function perturbSolution(solution: Team[]): Team[] {
 
     return newSolution;
 }
-
 
 function getRandomIndex(length: number): number {
     return Math.floor(Math.random() * length);
