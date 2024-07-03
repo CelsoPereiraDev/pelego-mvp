@@ -1,18 +1,19 @@
-import { Bolsonaro, GarfinhoImage, NH } from "./images";
+import { Player } from "@/types/player";
+import { Bolsonaro, GarfinhoImage,  NH } from "./images";
 
-export default function PlayerMock() {
+export default function PlayerMock(): Player[] {
   return (
     [
       {
         "name": "2008",
         "overall": {
-          "pace": 55,
-          "shooting": 23,
+          "pace": 50,
+          "shooting": 24,
           "passing": 27,
-          "dribble": 12,
-          "defense": 44,
-          "physics": 69,
-          "overall": 38
+          "dribble": 16,
+          "defense": 41,
+          "physics": 62,
+          "overall": 37
         },
         "country": "",
         "label": "2008",
@@ -24,13 +25,13 @@ export default function PlayerMock() {
       {
         "name": "Adriano",
         "overall": {
-          "pace": 72,
+          "pace": 73,
           "shooting": 79,
-          "passing": 66,
-          "dribble": 75,
-          "defense": 49,
-          "physics": 75,
-          "overall": 73
+          "passing": 69,
+          "dribble": 76,
+          "defense": 55,
+          "physics": 76,
+          "overall": 74
         },
         "country": "",
         "label": "Adriano",
@@ -42,13 +43,13 @@ export default function PlayerMock() {
       {
         "name": "Bolsonaro",
         "overall": {
-          "pace": 54,
-          "shooting": 44,
-          "passing": 58,
-          "dribble": 38,
-          "defense": 68,
-          "physics": 64,
-          "overall": 60
+          "pace": 53,
+          "shooting": 45,
+          "passing": 57,
+          "dribble": 40,
+          "defense": 65,
+          "physics": 62,
+          "overall": 57
         },
         "country": "",
         "label": "Bolsonaro",
@@ -60,13 +61,13 @@ export default function PlayerMock() {
       {
         "name": "Celso",
         "overall": {
-          "pace": 75,
+          "pace": 76,
           "shooting": 75,
-          "passing": 76,
+          "passing": 77,
           "dribble": 82,
-          "defense": 64,
-          "physics": 69,
-          "overall": 75
+          "defense": 67,
+          "physics": 71,
+          "overall": 69
         },
         "country": "",
         "label": "Celso",
@@ -78,31 +79,31 @@ export default function PlayerMock() {
       {
         "name": "Clev",
         "overall": {
-          "pace": 78,
+          "pace": 79,
           "shooting": 77,
           "passing": 79,
-          "dribble": 72,
-          "defense": 64,
+          "dribble": 75,
+          "defense": 68,
           "physics": 80,
-          "overall": 75
+          "overall": 77
         },
         "country": "",
         "label": "Clev",
         "value": "Clev",
         "team": "",
         "image": "",
-        "position": "MEI"
+        "position": "ATK"
       },
       {
         "name": "Danniboy",
         "overall": {
-          "pace": 75,
-          "shooting": 75,
-          "passing": 56,
-          "dribble": 65,
-          "defense": 26,
-          "physics": 61,
-          "overall": 65
+          "pace": 74,
+          "shooting": 74,
+          "passing": 59,
+          "dribble": 66,
+          "defense": 33,
+          "physics": 63,
+          "overall": 66
         },
         "country": "",
         "label": "Danniboy",
@@ -114,13 +115,13 @@ export default function PlayerMock() {
       {
         "name": "Daro",
         "overall": {
-          "pace": 43,
-          "shooting": 44,
-          "passing": 48,
-          "dribble": 28,
-          "defense": 49,
-          "physics": 50,
-          "overall": 44
+          "pace": 42,
+          "shooting": 43,
+          "passing": 46,
+          "dribble": 30,
+          "defense": 47,
+          "physics": 48,
+          "overall": 43
         },
         "country": "",
         "label": "Daro",
@@ -134,10 +135,10 @@ export default function PlayerMock() {
         "overall": {
           "pace": 90,
           "shooting": 85,
-          "passing": 76,
-          "dribble": 85,
-          "defense": 77,
-          "physics": 82,
+          "passing": 79,
+          "dribble": 86,
+          "defense": 79,
+          "physics": 83,
           "overall": 83
         },
         "country": "",
@@ -150,13 +151,13 @@ export default function PlayerMock() {
       {
         "name": "Du",
         "overall": {
-          "pace": 60,
-          "shooting": 69,
-          "passing": 59,
-          "dribble": 52,
-          "defense": 69,
-          "physics": 60,
-          "overall": 63
+          "pace": 63,
+          "shooting": 67,
+          "passing": 58,
+          "dribble": 55,
+          "defense": 71,
+          "physics": 66,
+          "overall": 66
         },
         "country": "",
         "label": "Du",
@@ -168,13 +169,13 @@ export default function PlayerMock() {
       {
         "name": "Eric",
         "overall": {
-          "pace": 43,
-          "shooting": 47,
+          "pace": 46,
+          "shooting": 49,
           "passing": 57,
-          "dribble": 49,
-          "defense": 38,
-          "physics": 47,
-          "overall": 47
+          "dribble": 51,
+          "defense": 42,
+          "physics": 49,
+          "overall": 49
         },
         "country": "",
         "label": "Eric",
@@ -186,13 +187,13 @@ export default function PlayerMock() {
       {
         "name": "Fer",
         "overall": {
-          "pace": 52,
+          "pace": 54,
           "shooting": 59,
-          "passing": 75,
-          "dribble": 75,
+          "passing": 70,
+          "dribble": 73,
           "defense": 67,
           "physics": 60,
-          "overall": 65
+          "overall": 64
         },
         "country": "",
         "label": "Fer",
@@ -204,13 +205,13 @@ export default function PlayerMock() {
       {
         "name": "Gabriel",
         "overall": {
-          "pace": 56,
-          "shooting": 50,
-          "passing": 58,
-          "dribble": 41,
-          "defense": 70,
-          "physics": 73,
-          "overall": 58
+          "pace": 57,
+          "shooting": 53,
+          "passing": 59,
+          "dribble": 45,
+          "defense": 69,
+          "physics": 72,
+          "overall": 59
         },
         "country": "",
         "label": "Gabriel",
@@ -223,12 +224,12 @@ export default function PlayerMock() {
         "name": "Gabrielzin",
         "overall": {
           "pace": 79,
-          "shooting": 63,
-          "passing": 68,
-          "dribble": 66,
-          "defense": 67,
-          "physics": 68,
-          "overall": 68
+          "shooting": 65,
+          "passing": 69,
+          "dribble": 68,
+          "defense": 69,
+          "physics": 69,
+          "overall": 70
         },
         "country": "",
         "label": "Gabrielzin",
@@ -240,13 +241,13 @@ export default function PlayerMock() {
       {
         "name": "Guilherme",
         "overall": {
-          "pace": 35,
-          "shooting": 25,
-          "passing": 37,
-          "dribble": 17,
-          "defense": 54,
+          "pace": 37,
+          "shooting": 28,
+          "passing": 39,
+          "dribble": 22,
+          "defense": 52,
           "physics": 47,
-          "overall": 42
+          "overall": 43
         },
         "country": "",
         "label": "Guilherme",
@@ -258,13 +259,13 @@ export default function PlayerMock() {
       {
         "name": "Gustagol",
         "overall": {
-          "pace": 53,
+          "pace": 57,
           "shooting": 73,
-          "passing": 65,
-          "dribble": 59,
-          "defense": 50,
-          "physics": 67,
-          "overall": 63
+          "passing": 67,
+          "dribble": 62,
+          "defense": 54,
+          "physics": 68,
+          "overall": 65
         },
         "country": "",
         "label": "Gustagol",
@@ -276,13 +277,13 @@ export default function PlayerMock() {
       {
         "name": "Igor",
         "overall": {
-          "pace": 58,
-          "shooting": 39,
-          "passing": 57,
-          "dribble": 34,
-          "defense": 80,
-          "physics": 74,
-          "overall": 64
+          "pace": 57,
+          "shooting": 41,
+          "passing": 55,
+          "dribble": 37,
+          "defense": 72,
+          "physics": 70,
+          "overall": 62
         },
         "country": "",
         "label": "Igor",
@@ -294,13 +295,13 @@ export default function PlayerMock() {
       {
         "name": "João da R",
         "overall": {
-          "pace": 21,
-          "shooting": 43,
-          "passing": 49,
-          "dribble": 35,
-          "defense": 19,
-          "physics": 20,
-          "overall": 33
+          "pace": 13,
+          "shooting": 32,
+          "passing": 42,
+          "dribble": 26,
+          "defense": 17,
+          "physics": 16,
+          "overall": 25
         },
         "country": "",
         "label": "João da R",
@@ -312,13 +313,13 @@ export default function PlayerMock() {
       {
         "name": "Jonathan",
         "overall": {
-          "pace": 60,
+          "pace": 61,
           "shooting": 64,
           "passing": 62,
-          "dribble": 55,
-          "defense": 53,
-          "physics": 60,
-          "overall": 60
+          "dribble": 57,
+          "defense": 55,
+          "physics": 61,
+          "overall": 61
         },
         "country": "",
         "label": "Jonathan",
@@ -330,13 +331,13 @@ export default function PlayerMock() {
       {
         "name": "Leo",
         "overall": {
-          "pace": 44,
-          "shooting": 43,
-          "passing": 45,
+          "pace": 42,
+          "shooting": 42,
+          "passing": 44,
           "dribble": 40,
           "defense": 37,
-          "physics": 45,
-          "overall": 43
+          "physics": 44,
+          "overall": 42
         },
         "country": "",
         "label": "Leo",
@@ -349,10 +350,10 @@ export default function PlayerMock() {
         "name": "Matheus",
         "overall": {
           "pace": 66,
-          "shooting": 51,
-          "passing": 57,
-          "dribble": 45,
-          "defense": 72,
+          "shooting": 53,
+          "passing": 58,
+          "dribble": 48,
+          "defense": 70,
           "physics": 61,
           "overall": 63
         },
@@ -366,12 +367,12 @@ export default function PlayerMock() {
       {
         "name": "Nairne",
         "overall": {
-          "pace": 27,
-          "shooting": 33,
+          "pace": 29,
+          "shooting": 36,
           "passing": 36,
-          "dribble": 28,
-          "defense": 49,
-          "physics": 61,
+          "dribble": 29,
+          "defense": 47,
+          "physics": 57,
           "overall": 37
         },
         "country": "",
@@ -384,13 +385,13 @@ export default function PlayerMock() {
       {
         "name": "Preto",
         "overall": {
-          "pace": 76,
-          "shooting": 83,
-          "passing": 85,
-          "dribble": 88,
-          "defense": 69,
-          "physics": 77,
-          "overall": 79
+          "pace": 78,
+          "shooting": 84,
+          "passing": 86,
+          "dribble": 89,
+          "defense": 73,
+          "physics": 79,
+          "overall": 81
         },
         "country": "",
         "label": "Preto",
@@ -402,13 +403,13 @@ export default function PlayerMock() {
       {
         "name": "Tcharlly",
         "overall": {
-          "pace": 59,
-          "shooting": 67,
-          "passing": 65,
-          "dribble": 67,
-          "defense": 66,
+          "pace": 61,
+          "shooting": 68,
+          "passing": 66,
+          "dribble": 68,
+          "defense": 67,
           "physics": 68,
-          "overall": 65
+          "overall": 66
         },
         "country": "",
         "label": "Tcharlly",
@@ -420,13 +421,13 @@ export default function PlayerMock() {
       {
         "name": "Toninho",
         "overall": {
-          "pace": 49,
-          "shooting": 42,
+          "pace": 50,
+          "shooting": 45,
           "passing": 57,
-          "dribble": 32,
-          "defense": 77,
-          "physics": 62,
-          "overall": 61
+          "dribble": 36,
+          "defense": 71,
+          "physics": 61,
+          "overall": 59
         },
         "country": "",
         "label": "Toninho",
@@ -438,13 +439,13 @@ export default function PlayerMock() {
       {
         "name": "João",
         "overall": {
-          "pace": 80,
+          "pace": 78,
           "shooting": 71,
-          "passing": 75,
-          "dribble": 76,
-          "defense": 75,
+          "passing": 74,
+          "dribble": 75,
+          "defense": 74,
           "physics": 73,
-          "overall": 75
+          "overall": 74
         },
         "country": "",
         "label": "João",
@@ -456,75 +457,75 @@ export default function PlayerMock() {
       {
         "name": "Brayan",
         "overall": {
-          "pace": 62,
-          "shooting": 45,
-          "passing": 50,
-          "dribble": 59,
-          "defense": 69,
-          "physics": 69,
-          "overall": 61
+          "pace": 66,
+          "shooting": 53,
+          "passing": 56,
+          "dribble": 63,
+          "defense": 70,
+          "physics": 27,
+          "overall": 63
         },
         "country": "",
         "label": "Brayan",
         "value": "Brayan",
         "team": "",
         "image": "",
-        "position": "DEF"
+        "position": "MEI"
       },
-      { 
-        "name": "Renan", 
-        "overall": { 
-            "pace": "", 
-            "shooting": "", 
-            "passing": "", 
-            "dribble": "", 
-            "defense": "", 
-            "physics": "", 
-            "overall": 71
-        }, 
+      {
+        "name": "Elias",
+        "overall": {
+          "pace": 57,
+          "shooting": 51,
+          "passing": 45,
+          "dribble": 42,
+          "defense": 53,
+          "physics": 56,
+          "overall": 51
+        },
         "country": "",
-        "label":'Renan',
-        "value":'Renan', 
-        "team": "", 
-        "image": "", 
-        "position": "ATK" 
-    },
-    {
-      "name": "Elias",
-      "overall": {
-        "pace": 78,
-        "shooting": 77,
-        "passing": 79,
-        "dribble": 72,
-        "defense": 64,
-        "physics": 80,
-        "overall": 57
+        "label": "Elias",
+        "value": "Elias",
+        "team": "",
+        "image": "",
+        "position": "MEI"
       },
-      "country": "",
-      "label": "Elias",
-      "value": "Elias",
-      "team": "",
-      "image": "",
-      "position": "MEI"
-    },
-    {
-      "name": "Lucas",
-      "overall": {
-        "pace": 68,
-        "shooting": 77,
-        "passing": 79,
-        "dribble": 72,
-        "defense": 64,
-        "physics": 80,
-        "overall": 68
+      {
+        "name": "Lucas",
+        "overall": {
+          "pace": 68,
+          "shooting": 77,
+          "passing": 79,
+          "dribble": 72,
+          "defense": 64,
+          "physics": 80,
+          "overall": 68
+        },
+        "country": "",
+        "label": "Lucas",
+        "value": "Lucas",
+        "team": "",
+        "image": "",
+        "position": "GOL"
       },
-      "country": "",
-      "label": "Lucas",
-      "value": "Lucas",
-      "team": "",
-      "image": "",
-      "position": "GOL"
-    },
+      {
+        "name": "Leandro",
+        "overall": {
+          "pace": 79,
+          "shooting": 77,
+          "passing": 79,
+          "dribble": 75,
+          "defense": 68,
+          "physics": 80,
+          "overall": 69
+        },
+        "country": "",
+        "label": "Leandro",
+        "value": "Leandro",
+        "team": "",
+        "image": "",
+        "position": "ATK"
+      },
     ]
   );
 }
