@@ -1,8 +1,9 @@
-import { Player, Team } from "@/utils/createTeam";
+import { Player } from "@/types/player";
 import PlayerCardSmall from "../PlayerCardSmall";
+import { Team } from "@/types/team";
 
-export default function Field({ team, showOverall }: { team: Team, showOverall:boolean }): JSX.Element {
-  const chunkArray = (players: Player[], size: number) => {
+export default function Field({ team, showOverall }: { team: Team; showOverall: boolean }): JSX.Element {
+  const chunkArray = (players: Player[], size: number): Player[][] => {
     const chunkedArray: Player[][] = [];
     for (let i = 0; i < players.length; i += size) {
       chunkedArray.push(players.slice(i, i + size));
@@ -10,10 +11,11 @@ export default function Field({ team, showOverall }: { team: Team, showOverall:b
     return chunkedArray;
   };
 
-  const groupedPlayers = {
+  const groupedPlayers: { [key: string]: Player[] } = {
     ATK: [],
     MEI: [],
-    DEF: []
+    DEF: [],
+    GOL: [],
   };
 
   team.players.forEach((player: Player) => {
@@ -23,11 +25,13 @@ export default function Field({ team, showOverall }: { team: Team, showOverall:b
       groupedPlayers.MEI.push(player);
     } else if (player.position === 'DEF') {
       groupedPlayers.DEF.push(player);
+    } else if (player.position === 'GOL') {
+      groupedPlayers.GOL.push(player);
     }
   });
 
   const playerGroups: Player[][] = [];
-  const positions = ['ATK', 'MEI', 'DEF'];
+  const positions: (keyof typeof groupedPlayers)[] = ['ATK', 'MEI', 'DEF', 'GOL'];
   positions.forEach(position => {
     const players = groupedPlayers[position];
     const chunkedPlayers = chunkArray(players, 5);
@@ -38,11 +42,11 @@ export default function Field({ team, showOverall }: { team: Team, showOverall:b
 
   return (
     <div className="bg-[url('../../public/new_field.jpg')] h-[870px] w-[559px] bg-cover bg-center bg-no-repeat">
-      <div className={`flex flex-col h-full justify-end gap-${gapValue} pb-[100px]`}>
+      <div className={`flex flex-col h-full justify-end gap-${gapValue} pb-[70px]`}>
         {playerGroups.map((playersInGroup, groupIndex) => (
           <div key={groupIndex} className="flex flex-row justify-around">
             {playersInGroup.map((playerData, index) => (
-              <PlayerCardSmall key={index} playerData={playerData} showOverall={showOverall}/>
+              <PlayerCardSmall key={index} playerData={playerData} showOverall={showOverall} />
             ))}
           </div>
         ))}
