@@ -1,40 +1,26 @@
 'use client'
 import Image from "next/image";
 import flagImage from "@/../public/flag.webp"
+import { Player } from "@/types/player";
 
-export interface PlayerDataProps {
-    name: string;
-    overall: {
-        pace: string;
-        shooting: string;
-        passing: string;
-        dribble: string;
-        defense: string;
-        physics: string;
-        overall: string;
-    };
-    country?: string;
-    team?: string;
-    image?: string;
-    position: string;
-}
+
 
 export interface StatsProps {
     stat: string;
-    value: string;
+    value: number;
 }
 
 export function Stats({stat, value}:StatsProps) {
     return (
         <div className="flex flex-row gap-2 text-2xl">
-            <span>{value}</span>
+            <span>{String(value)}</span>
             <span>{stat}</span>
         </div>
     )
 }
 
 
-function Badge({ playerData, children }) {
+function Badge({ playerData, children }:{playerData:Player, children:React.ReactNode}) {
     if (playerData.overall.overall < 65) {
         return (
             <div className={"bg-[url('../../public/bronze.png')] h-[500px] w-[311px] bg-contain bg-center bg-no-repeat text-[#4d331f]"}>
@@ -55,7 +41,7 @@ function Badge({ playerData, children }) {
         );
     }
 }
-export default function PlayerCard({ playerData }:PlayerDataProps) {
+export default function PlayerCard( playerData :Player) {
     return (
       <Badge playerData={playerData}>
         <div className="px-8 py-[72px]">
