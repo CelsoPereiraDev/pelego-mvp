@@ -4,7 +4,7 @@ interface TextInputProps {
     label: string;
     errorMessage?: string;
     width?: string;
-    value?: string;
+    value?: number | string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -18,7 +18,7 @@ export default function TextInput({ label, errorMessage, width, value, onChange 
             <div className="flex flex-col gap-[2px]"> 
                 <input
                     className={`border-[1px] ${borderColor} w-[${width}]`}
-                    value={value}
+                    value={String(value)}
                     onChange={onChange}
                 />
                 {errorMessage &&
