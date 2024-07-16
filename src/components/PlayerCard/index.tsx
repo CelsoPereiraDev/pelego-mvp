@@ -3,8 +3,6 @@ import Image from "next/image";
 import flagImage from "@/../public/flag.webp"
 import { Player } from "@/types/player";
 
-
-
 export interface StatsProps {
     stat: string;
     value: number;
