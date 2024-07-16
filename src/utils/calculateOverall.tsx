@@ -1,44 +1,44 @@
 interface CalculateOverallProps {
     position: 'DEF' | 'MEI' | 'ATK';
     overall: {
-        pace: string;
-        shooting: string;
-        passing: string;
-        dribble: string;
-        defense: string;
-        physics: string;
+        pace: number;
+        shooting: number;
+        passing: number;
+        dribble: number;
+        defense: number;
+        physics: number;
     };
 }
 
 export function calculateOverall({ position, overall }: CalculateOverallProps): number {
-    let pace = parseInt(overall?.pace);
-    let shooting = parseInt(overall?.shooting);
-    let passing = parseInt(overall?.passing);
-    let dribble = parseInt(overall?.dribble);
-    let defense = parseInt(overall?.defense);
-    let physics = parseInt(overall?.physics);
+    const pace = overall?.pace;
+    const shooting = overall?.shooting;
+    const passing = overall?.passing;
+    const dribble = overall?.dribble;
+    const defense = overall?.defense;
+    const physics = overall?.physics;
 
     if (position === 'DEF') {
-        pace *= 2;
-        shooting *= 2;
-        passing *= 3;
-        dribble *= 1;
-        defense *= 6;
-        physics *= 3;
+        overall.pace *= 2;
+        overall.shooting *= 2;
+        overall.passing *= 3;
+        overall.dribble *= 1;
+        overall.defense *= 6;
+        overall.physics *= 3;
     } else if (position === 'MEI') {
-        pace *= 3;
-        shooting *= 3;
-        passing *= 3;
-        dribble *= 3;
-        defense *= 3;
-        physics *= 3;
+        overall.pace *= 3;
+        overall.shooting *= 3;
+        overall.passing *= 3;
+        overall.dribble *= 3;
+        overall.defense *= 3;
+        overall.physics *= 3;
     } else if (position === 'ATK') {
-        pace *= 3;
-        shooting *= 5;
-        passing *= 2;
-        dribble *= 4;
-        defense *= 1;
-        physics *= 3;
+        overall.pace *= 3;
+        overall.shooting *= 5;
+        overall.passing *= 2;
+        overall.dribble *= 4;
+        overall.defense *= 1;
+        overall.physics *= 3;
     }
 
     const total = (pace + shooting + passing + dribble + defense + physics) / 18;
