@@ -49,11 +49,11 @@ export default function Home() {
     const firstPlayerTeamIndex = teams.findIndex(team => team === firstPlayerCurrentTeam);
     const secondPlayerTeamIndex = teams.findIndex(team => team === secondPlayerCurrentTeam);
 
-    let updatedFirstPlayerTeam = {
+    const updatedFirstPlayerTeam = {
       ...firstPlayerCurrentTeam,
       players: firstPlayerCurrentTeam.players.filter(player => player.name !== firstPlayerToTrade.name)
     };
-    let updatedSecondPlayerTeam = {
+    const updatedSecondPlayerTeam = {
       ...secondPlayerCurrentTeam,
       players: secondPlayerCurrentTeam.players.filter(player => player.name !== secondPlayerToTrade.name)
     };
@@ -88,7 +88,10 @@ export default function Home() {
             isMulti
             options={availablePlayers.map(player => ({ label: player.name, value: player }))}
             value={selectedPlayers.map(player => ({ label: player.name, value: player }))}
-            onChange={(selectedOptions) => setSelectedPlayers(selectedOptions.map((option: any) => option.value))}
+            onChange={(selectedOptions) => setSelectedPlayers(selectedOptions.map((option: {
+              label: string;
+              value: Player;
+          }) => option.value))}
           />
             <span className="text-white">Jogadores selecionados: {selectedPlayers.length}</span>
             <div>
