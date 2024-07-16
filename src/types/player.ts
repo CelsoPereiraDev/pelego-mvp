@@ -19,5 +19,6 @@ export interface Player {
     team: string | StaticImageData;
     image: string | StaticImageData;
     position: string;
+    isChampion?: boolean;
   }
 
