@@ -15,7 +15,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-main)']
-      }
+      },
+      colors: {
+        customGold: '#9e7e47',
+        customLightGold: '#fbdd97',
+      },
     },
   },
   plugins: [],
