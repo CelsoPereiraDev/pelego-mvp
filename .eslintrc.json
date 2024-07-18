@@ -16,11 +16,15 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "eslint-plugin-import-helpers"],
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "eslint-plugin-import-helpers"
+  ],
   "rules": {
-    "indent": ["off"],
+    "indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
-    "quotes": [2, "single"],
+    "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "react/react-in-jsx-scope": "off",
     "import-helpers/order-imports": [
