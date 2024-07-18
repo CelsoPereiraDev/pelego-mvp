@@ -1,5 +1,5 @@
 interface CalculateOverallProps {
-    position: 'DEF' | 'MEI' | 'ATK';
+    position: 'DEF' | 'MEI' | 'ATK'| 'GOL';
     overall: {
         pace: number;
         shooting: number;
@@ -11,34 +11,31 @@ interface CalculateOverallProps {
 }
 
 export function calculateOverall({ position, overall }: CalculateOverallProps): number {
-    const pace = overall?.pace;
-    const shooting = overall?.shooting;
-    const passing = overall?.passing;
-    const dribble = overall?.dribble;
-    const defense = overall?.defense;
-    const physics = overall?.physics;
+    if (!overall) {
+        return 0;
+    }
+
+    let { pace = 0, shooting = 0, passing = 0, dribble = 0, defense = 0, physics = 0 } = overall;
 
     if (position === 'DEF') {
-        overall.pace *= 2;
-        overall.shooting *= 2;
-        overall.passing *= 3;
-        overall.dribble *= 1;
-        overall.defense *= 6;
-        overall.physics *= 3;
-    } else if (position === 'MEI') {
-        overall.pace *= 3;
-        overall.shooting *= 3;
-        overall.passing *= 3;
-        overall.dribble *= 3;
-        overall.defense *= 3;
-        overall.physics *= 3;
+        pace *= 2;
+        shooting *= 2;
+        passing *= 3;
+        defense *= 6;
+        physics *= 3;
+    } else if (position === 'MEI' || position === 'GOL') {
+        pace *= 3;
+        shooting *= 3;
+        passing *= 3;
+        dribble *= 3;
+        defense *= 3;
+        physics *= 3;
     } else if (position === 'ATK') {
-        overall.pace *= 3;
-        overall.shooting *= 5;
-        overall.passing *= 2;
-        overall.dribble *= 4;
-        overall.defense *= 1;
-        overall.physics *= 3;
+        pace *= 3;
+        shooting *= 5;
+        passing *= 2;
+        dribble *= 4;
+        physics *= 3;
     }
 
     const total = (pace + shooting + passing + dribble + defense + physics) / 18;
