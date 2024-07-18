@@ -1,8 +1,8 @@
 'use client'
-import Image from "next/image";
-import flagImage from "@/../public/flag.webp"
 import { Player } from "@/types/player";
+import Image from "next/image";
 import React from "react";
+import Flag from "react-world-flags";
 
 export interface StatsProps {
     stat: string;
@@ -53,11 +53,7 @@ export default function PlayerCard({ playerData }: { playerData: Player }) {
 
                         <div className="h-[45px] mt-[3px]">
                             <div className="w-[54px] flex justify-center pt-[6px] ml-[5px]">
-                                {typeof playerData.country === "string" ? (
-                                    <Image src={playerData.country} alt="flag" width={48} height={22} />
-                                ) : (
-                                    <Image src={flagImage} alt="flag" width={48} height={22} />
-                                )}
+                                     <Flag code={playerData.country}   alt="flag" width={48} height={22}/>
                             </div>
                             {playerData.team && (
                                 <div className="pt-[6px] ml-1">
