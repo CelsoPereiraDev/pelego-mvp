@@ -1,8 +1,9 @@
 'use client'
 
-import Image from "next/image";
-import flagImage from "@/../public/flag.webp";
 import { Player } from "@/types/player";
+import Image from "next/image";
+import Flag from "react-world-flags";
+import { NH } from "../../utils/images";
 
 interface PlayerCardSmallProps {
     playerData: Player;
@@ -46,17 +47,17 @@ const PlayerCardSmall: React.FC<PlayerCardSmallProps> = ({ playerData, showOvera
                         <div className="flex flex-col gap-2">
                           
                             <div>
-                                {playerData.country ? (
-                                    <Image src={playerData.country} alt="flag" width={18} height={9} />
-                                ) : (
-                                    <Image src={flagImage} alt="flag" width={26} height={9} />
-                                )}
+                                 {playerData.country ? (
+                                            <Flag code={playerData.country}   alt="flag" width={26} height={9}/>
+                                        ) : (
+                                            <Flag code="BR"   alt="flag" width={26} height={9}/>
+                                        )}
                             </div>
-                            {playerData.team && (
-                            <div>
-                                <Image src={playerData.team} alt="team logo" width={24} height={24} />
-                            </div>
-                          )}
+                            {playerData.team === 'NH' && (
+                                        
+                                            <Image src={NH} alt="team logo" width={24} height={24} />
+                                        
+                                    )}
                             </div>
                             <div className="flex flex-col items-center mr-3">
                                 <div className="flex flex-col justify-center w-min items-center">
@@ -98,14 +99,14 @@ const PlayerCardSmall: React.FC<PlayerCardSmallProps> = ({ playerData, showOvera
                                 <div>
                                     <div>
                                         {playerData.country ? (
-                                            <Image src={playerData.country} alt="flag" width={18} height={9} />
+                                            <Flag code={playerData.country}   alt="flag" width={26} height={9}/>
                                         ) : (
-                                            <Image src={flagImage} alt="flag" width={26} height={9} />
+                                            <Flag code="BR"   alt="flag" width={26} height={9}/>
                                         )}
                                     </div>
-                                    {playerData.team && (
-                                        <div className="pt-[6px]">
-                                            <Image src={playerData.team} alt="team logo" width={24} height={24} />
+                                    {playerData.team === 'NH' && (
+                                        <div className="pt-[3px]">
+                                            <Image src={NH} alt="team logo" width={24} height={24} />
                                         </div>
                                     )}
                                 </div>
