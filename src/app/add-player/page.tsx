@@ -3,8 +3,10 @@
 import CountrySelect, { CountryOption } from "@/components/CountrySelect";
 import PlayerCard from "@/components/PlayerCard";
 import TextInput from "@/components/TextInput";
+import { addPlayerMapper } from "@/mapper/addPlayerMapper";
 import { formToPlayerMapper } from "@/mapper/formToPlayerMapper";
 import { playerGetOverallSchema } from "@/schema/player";
+import { createPlayer } from "@/services/player/resources";
 import { Player, PlayerGetOverallFormData } from "@/types/player";
 import { calculateOverall } from "@/utils/calculateOverall";
 import countryOptions from "@/utils/countryOptions";
@@ -18,10 +20,11 @@ export default function AddPlayersPage() {
     control,
     watch,
     handleSubmit,
+    formState: {errors}
+    
   } = useForm<PlayerGetOverallFormData>({
     resolver: zodResolver(playerGetOverallSchema),
   });
-
   const overallWatcher = watch('overall');
   const positionWatcher = watch('position');
   const playerDataWatcher = watch();
@@ -40,9 +43,17 @@ export default function AddPlayersPage() {
     setPlayerData(formData)
 };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  const onSubmit = async (formData: PlayerGetOverallFormData) => {
+        const playerData = addPlayerMapper(formData);
+        console.log("🚀 ~ onSubmit ~ playerData:", playerData)
+
+        try {
+            const createdPlayer = await createPlayer(playerData);
+            console.log('Jogador criado com sucesso:', createdPlayer);
+        } catch (error) {
+            console.error('Erro ao criar jogador:', error);
+        }
+    };
 
   return (
     <div className="h-screen bg-[#212121] w-screen flex justify-start flex-col p-12 items-center gap-7">
@@ -74,21 +85,21 @@ export default function AddPlayersPage() {
               />
             </div>
           </div>
-            <div>
+          <div>
             <label>País</label>
-              <Controller
-                control={control}
-                name="country"
-                render={({ field }) => (
-                  <CountrySelect
-                    value={countryOptions.find(option => option.value === field.value) || null}
-                    onChange={(selectedOption: SingleValue<CountryOption>) => {
-                      field.onChange(selectedOption?.value || '');
-                    }}
-                  />
-                )}
-              />
-            </div>
+            <Controller
+              control={control}
+              name="country"
+              render={({ field }) => (
+                <CountrySelect
+                  value={countryOptions.find(option => option.value === field.value) || null}
+                  onChange={(selectedOption: SingleValue<CountryOption>) => {
+                    field.onChange(selectedOption?.value || '');
+                  }}
+                />
+              )}
+            />
+          </div>
           <div className="flex flex-row max-w-[300px] mt-4 gap-4 justify-between">
             <div className="flex flex-col gap-1">
               <Controller
@@ -144,13 +155,14 @@ export default function AddPlayersPage() {
           >
             Calcular Overall
           </button>
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
             Salvar Jogador
           </button>
         </form>
-        {
-          playerData && <PlayerCard playerData={playerData} />
-        }
+        {playerData && <PlayerCard playerData={playerData} />}
       </div>
     </div>
   );
