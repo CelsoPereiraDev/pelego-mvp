@@ -1,12 +1,12 @@
 interface CalculateOverallProps {
-    position: 'DEF' | 'MEI' | 'ATK'| 'GOL';
+    position: 'DEF' | 'MEI' | 'ATK' | 'GOL';
     overall: {
-        pace: number;
-        shooting: number;
-        passing: number;
-        dribble: number;
-        defense: number;
-        physics: number;
+        pace: string;
+        shooting: string;
+        passing: string;
+        dribble: string;
+        defense: string;
+        physics: string;
     };
 }
 
@@ -15,30 +15,46 @@ export function calculateOverall({ position, overall }: CalculateOverallProps): 
         return 0;
     }
 
-    let { pace = 0, shooting = 0, passing = 0, dribble = 0, defense = 0, physics = 0 } = overall;
+    const {
+        pace = '0',
+        shooting = '0',
+        passing = '0',
+        dribble = '0',
+        defense = '0',
+        physics = '0'
+    } = overall;
+    
+    let paceNum = Number(pace);
+    let shootingNum = Number(shooting);
+    let passingNum = Number(passing);
+    let dribbleNum = Number(dribble);
+    let defenseNum = Number(defense);
+    let physicsNum = Number(physics);
 
     if (position === 'DEF') {
-        pace *= 2;
-        shooting *= 2;
-        passing *= 3;
-        defense *= 6;
-        physics *= 3;
+        paceNum *= 2;
+        shootingNum *= 2;
+        passingNum *= 3;
+        dribbleNum *= 1;
+        defenseNum *= 6;
+        physicsNum *= 3;
     } else if (position === 'MEI' || position === 'GOL') {
-        pace *= 3;
-        shooting *= 3;
-        passing *= 3;
-        dribble *= 3;
-        defense *= 3;
-        physics *= 3;
+        paceNum *= 3;
+        shootingNum *= 3;
+        passingNum *= 3;
+        dribbleNum *= 3;
+        defenseNum *= 3;
+        physicsNum *= 3;
     } else if (position === 'ATK') {
-        pace *= 3;
-        shooting *= 5;
-        passing *= 2;
-        dribble *= 4;
-        physics *= 3;
+        paceNum *= 3;
+        shootingNum *= 5;
+        passingNum *= 2;
+        dribbleNum *= 4;
+        defenseNum *= 1;
+        physicsNum *= 3;
     }
 
-    const total = (pace + shooting + passing + dribble + defense + physics) / 18;
+    const total = (paceNum + shootingNum + passingNum + dribbleNum + defenseNum + physicsNum) / 18;
 
     return Math.round(total);
 }
