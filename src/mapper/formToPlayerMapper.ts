@@ -6,16 +6,16 @@ export const formToPlayerMapper = (formData: PlayerGetOverallFormData, overallVa
     const player: Player = {
         name,
         overall: {
-            pace: overall.pace,
-            shooting: overall.shooting,
-            passing: overall.passing,
-            dribble: overall.dribble,
-            defense: overall.defense,
-            physics: overall.physics,
+            pace: Number(overall.pace),
+            shooting: Number(overall.shooting),
+            passing: Number(overall.passing),
+            dribble: Number(overall.dribble),
+            defense: Number(overall.defense),
+            physics: Number(overall.physics),
             overall: overallValue,
         },
         position,
-        country,
+        country
     };
 
     return player;
