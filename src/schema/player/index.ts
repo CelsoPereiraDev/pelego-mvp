@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 export const playerOverallSchema = z.object({
-  pace: z.number().int().min(0).max(100),
-  shooting: z.number().int().min(0).max(100),
-  passing: z.number().int().min(0).max(100),
-  dribble: z.number().int().min(0).max(100),
-  defense: z.number().int().min(0).max(100),
-  physics: z.number().int().min(0).max(100),
+  pace: z.string().min(0).max(100),
+  shooting: z.string().min(0).max(100),
+  passing: z.string().min(0).max(100),
+  dribble: z.string().min(0).max(100),
+  defense: z.string().min(0).max(100),
+  physics: z.string().min(0).max(100),
 });
 
 
