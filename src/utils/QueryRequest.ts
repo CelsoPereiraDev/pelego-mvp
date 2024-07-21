@@ -61,4 +61,18 @@ export class QueryRequest<ResponseType, PayloadType = undefined> {
 
     return response.json();
   }
+
+   async getById(id: string, endpoint: string): Promise<ResponseType> {
+    const response = await fetch(`${this.baseUrl}/${endpoint}/${id}`, {
+      method: 'GET',
+      headers: this.headers,
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao buscar dados');
+    }
+
+    return response.json();
+  }
 }
+
