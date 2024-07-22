@@ -62,7 +62,7 @@ export class QueryRequest<ResponseType, PayloadType = undefined> {
     return response.json();
   }
 
-   async getById(id: string, endpoint: string): Promise<ResponseType> {
+  async getById(id: string, endpoint: string): Promise<ResponseType> {
     const response = await fetch(`${this.baseUrl}/${endpoint}/${id}`, {
       method: 'GET',
       headers: this.headers,
@@ -74,5 +74,21 @@ export class QueryRequest<ResponseType, PayloadType = undefined> {
 
     return response.json();
   }
+
+  async delete(endpoint: string): Promise<ResponseType> {
+    const response = await fetch(`${this.baseUrl}/${endpoint}`, {
+      method: 'DELETE',
+      headers: this.headers,
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao deletar dados');
+    }
+
+    return response.json();
+  }
 }
+
+
+  
 
