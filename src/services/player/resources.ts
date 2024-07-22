@@ -11,14 +11,20 @@ export async function getPlayers() {
   return queryRequest.get('get_players');
 }
 
+export async function getPlayer(playerId: string) {
+  const queryRequest = new QueryRequest<PlayerResponse>(BASE_URL, CLIENT_ID);
+  queryRequest.addDefaultHeaders();
+  return queryRequest.getById(playerId, 'get_player');
+}
+
 export async function createPlayer(playerData: CreatePlayerDataRequested) {
   const queryRequest = new QueryRequest<PlayerResponse, CreatePlayerDataRequested>(BASE_URL, CLIENT_ID);
   queryRequest.addDefaultHeaders();
   return queryRequest.post('create_players', playerData);
 }
 
-export async function getPlayer(playerId: string) {
-  const queryRequest = new QueryRequest<PlayerResponse>(BASE_URL, CLIENT_ID);
+export async function deletePlayer(playerId: string) {
+  const queryRequest = new QueryRequest<{ message: string }>(BASE_URL, CLIENT_ID);
   queryRequest.addDefaultHeaders();
-  return queryRequest.getById(playerId, 'get_player');
+  return queryRequest.delete(`delete_player/${playerId}`);
 }
