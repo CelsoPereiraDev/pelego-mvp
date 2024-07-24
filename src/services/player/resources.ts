@@ -28,3 +28,9 @@ export async function deletePlayer(playerId: string) {
   queryRequest.addDefaultHeaders();
   return queryRequest.delete(`delete_player/${playerId}`);
 }
+
+export async function editPlayer(playerId: string, playerData: CreatePlayerDataRequested): Promise<PlayerResponse> {
+  const queryRequest = new QueryRequest<PlayerResponse, CreatePlayerDataRequested>(BASE_URL, CLIENT_ID);
+  queryRequest.addDefaultHeaders();
+  return queryRequest.patch(`players/${playerId}`, playerData);
+}
