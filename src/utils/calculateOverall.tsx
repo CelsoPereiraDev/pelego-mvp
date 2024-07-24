@@ -37,7 +37,7 @@ export function calculateOverall({ position, overall }: CalculateOverallProps): 
         passingNum *= 3;
         dribbleNum *= 1;
         defenseNum *= 6;
-        physicsNum *= 3;
+        physicsNum *= 4;
     } else if (position === 'MEI' || position === 'GOL') {
         paceNum *= 3;
         shootingNum *= 3;
