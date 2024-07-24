@@ -47,3 +47,28 @@ export interface GoalResponse {
   match: MatchResponse;
   player: PlayerResponse;
 }
+
+export type CreateMatch = {
+  date: string;
+  teams: {
+    players: string[];
+  }[];
+  matches: {
+    homeTeamId: string;
+    homeGoals: {
+      goalsCount: string;
+      whoScores: {
+        goals: number;
+        playerId: string;
+      }[];
+    };
+    awayGoals: {
+      goalsCount: string;
+      whoScores: {
+        goals: number;
+        playerId: string;
+      }[];
+    };
+    awayTeamId: string;
+  }[];
+};

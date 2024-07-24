@@ -1,40 +1,37 @@
-import { CreateMatch } from "@/app/match/page";
-import { CreateMatchDataRequested, CreateWeekWithTeamsBody, GoalDetails } from "@/types/match";
+import { CreateMatch } from '@/app/match/page';
+import { CreateMatchDataRequested } from '@/types/match';
 
-export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: string }[]): { weekData: CreateWeekWithTeamsBody, matchesData: CreateMatchDataRequested[] } {
-  console.log("🚀 ~ mapFormDataToBackend ~ createdTeams:", createdTeams)
-  const weekData: CreateWeekWithTeamsBody = {
-    date: data.date,
+export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: string }[], weekId: string) {
+  const weekData = {
+    date: new Date(data.date),
     teams: data.teams.map(team => team.players)
   };
 
   const matchesData: CreateMatchDataRequested[] = data.matches.map(match => {
-    const homeGoals: GoalDetails[] = match.homeGoals.whoScores
-      .filter(goal => goal.playerId && goal.goals !== undefined)
-      .map(goal => ({
-        playerId: goal.playerId,
-        goals: Number(goal.goals)
-      }));
+    const homeTeam = createdTeams[parseInt(match.homeTeamId, 10)];
+    const awayTeam = createdTeams[parseInt(match.awayTeamId, 10)];
 
-    const awayGoals: GoalDetails[] = match.awayGoals.whoScores
-      .filter(goal => goal.playerId && goal.goals !== undefined)
-      .map(goal => ({
-        playerId: goal.playerId,
-        goals: Number(goal.goals)
-      }));
-
-    
-
-    const homeTeam = createdTeams.find((_, index) => index.toString() === match.homeTeamId);
-    console.log("🚀 ~ mapFormDataToBackend ~ match.homeTeamId:", match.homeTeamId)
-    const awayTeam = createdTeams.find((_, index) => index.toString() === match.awayTeamId);
+    if (!homeTeam || !awayTeam) {
+      throw new Error('Missing team IDs in matches data');
+    }
 
     return {
-      date: data.date,
-      homeTeamId: homeTeam ? homeTeam.id : '',
-      awayTeamId: awayTeam ? awayTeam.id : '',
-      homeGoals,
-      awayGoals
+      weekId,  // Inclui o weekId no objeto de partida
+      date: new Date(data.date).toISOString(),
+      homeTeamId: homeTeam.id,
+      awayTeamId: awayTeam.id,
+      homeGoals: match.homeGoals.whoScores
+        .filter(goal => goal.playerId && goal.goals !== undefined && goal.goals !== null)
+        .map(goal => ({
+          playerId: goal.playerId,
+          goals: typeof goal.goals === 'string' ? parseInt(goal.goals, 10) : goal.goals
+        })),
+      awayGoals: match.awayGoals.whoScores
+        .filter(goal => goal.playerId && goal.goals !== undefined && goal.goals !== null)
+        .map(goal => ({
+          playerId: goal.playerId,
+          goals: typeof goal.goals === 'string' ? parseInt(goal.goals, 10) : goal.goals
+        }))
     };
   });
 

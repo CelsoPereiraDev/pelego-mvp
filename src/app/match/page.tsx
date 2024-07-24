@@ -3,7 +3,8 @@
 import { MatchForm } from '@/components/MatchForm';
 import { mapFormDataToBackend } from '@/mapper/createMatches';
 import { createGoals } from '@/services/matchs/resources';
-import { useCreateMatch } from '@/services/matchs/useCreateMatch';
+import { useCreateMatches } from '@/services/matchs/useCreateMatch';
+
 import { useCreateWeekWithTeams } from '@/services/matchs/useCreateWeekWithTeams';
 import { usePlayers } from '@/services/player/usePlayers';
 import { GoalDetails } from '@/types/match';
@@ -48,6 +49,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     }
   });
   const [createdTeams, setCreatedTeams] = useState<{ id: string }[]>([]);
+  const [weekId, setWeekId] = useState<string | null>(null);
   const selectedPlayers = useWatch({ control, name: 'teams' }).flatMap((team: { players: string[] }) => team.players);
   const { players, isLoading } = usePlayers();
   const { fields: teamFields, append: appendTeam, update: updateTeam } = useFieldArray({
@@ -60,7 +62,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     name: 'matches'
   });
   const { createWeek } = useCreateWeekWithTeams();
-  const { createNewMatch } = useCreateMatch();
+  const { createNewMatches } = useCreateMatches();
 
   const handleCreateTeams: SubmitHandler<CreateMatch> = async data => {
     try {
@@ -78,6 +80,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
       }
 
       setCreatedTeams(result.createdTeams);
+      setWeekId(result.week.id);
 
       alert('Teams created successfully! Now you can create matches.');
     } catch (error) {
@@ -87,43 +90,50 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   };
 
   const handleCreateMatches: SubmitHandler<CreateMatch> = async data => {
-    try {
-      const { matchesData } = mapFormDataToBackend(data, createdTeams);
-      console.log("Matches data to be created:", matchesData);
-
-      const matchPromises = matchesData.map(async matchData => {
-        if (!matchData.homeTeamId || !matchData.awayTeamId) {
-          throw new Error("Missing team IDs in matches data");
-        }
-
-        console.log("Creating match with data:", matchData);
-        const createdMatch = await createNewMatch(matchData);
-        console.log("Match created:", createdMatch);
-
-        const goalsData: GoalDetails[] = [
-          ...matchData.homeGoals.map(goal => ({
-            ...goal,
-            matchId: createdMatch.id
-          })),
-          ...matchData.awayGoals.map(goal => ({
-            ...goal,
-            matchId: createdMatch.id
-          }))
-        ];
-
-        if (goalsData.length > 0) {
-          console.log("Creating goals with data:", goalsData);
-          await createGoals(goalsData);
-        }
-      });
-
-      await Promise.all(matchPromises);
-      alert('Matches created successfully!');
-    } catch (error) {
-      console.error('Error creating matches:', error);
-      alert('Failed to create matches');
+  console.log("🚀 ~ data:", data)
+  try {
+    if (!weekId) {
+      throw new Error("Week ID must be set before creating matches.");
     }
-  };
+
+    // Pass the created teams and weekId to the mapper
+    const { matchesData } = mapFormDataToBackend(data, createdTeams, weekId);
+    console.log("Matches data to be created:", matchesData);
+
+    const createdMatches = await createNewMatches({ matches: matchesData });
+    console.log('Matches created:', createdMatches);
+
+    const goalPromises = createdMatches.map(async (match, index) => {
+      const matchData = matchesData[index];
+      const goalsData: GoalDetails[] = [
+        ...matchData.homeGoals.map(goal => ({
+          ...goal,
+          matchId: match.id
+        })),
+        ...matchData.awayGoals.map(goal => ({
+          ...goal,
+          matchId: match.id
+        }))
+      ];
+
+      if (goalsData.length > 0) {
+        console.log("Creating goals with data:", goalsData);
+        await createGoals(goalsData);
+      }
+    });
+
+    await Promise.all(goalPromises);
+    alert('Matches created successfully!');
+  } catch (error) {
+    console.error('Error creating matches:', error);
+    alert('Failed to create matches');
+  }
+};
+
+
+
+
+
 
   const handleAddTeam = useCallback(() => {
     appendTeam({ players: [] });
