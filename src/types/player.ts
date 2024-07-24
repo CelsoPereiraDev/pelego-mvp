@@ -1,6 +1,12 @@
 import { playerGetOverallSchema } from "@/schema/player";
-import { StaticImageData } from "next/image";
 import { z } from "zod";
+
+export enum PlayerPosition {
+  MEI = 'MEI',
+  ATK = 'ATK',
+  DEF = 'DEF',
+  GOL = 'GOL'
+}
 
 export interface PlayerOverall {
   pace: number;
@@ -11,16 +17,17 @@ export interface PlayerOverall {
   physics: number;
   overall: number;
 }
-  
+
 export interface Player {
+  id: string;
   name: string;
   overall: PlayerOverall;
   country?: string;
   value?: string;
-  team?: string | StaticImageData;
-  image?: string | StaticImageData;
-  position: string;
-  isChampion?: boolean;
+  team?: string;
+  image?: string;
+  position: PlayerPosition;
+  isChampion: boolean;
 }
 
 export interface PlayerGoals {
@@ -33,22 +40,12 @@ export type PlayerGetOverallFormData = z.infer<typeof playerGetOverallSchema>;
 export interface PlayerResponse {
   id: string;
   name: string;
-  overall: OverallDataRequested;
+  overall: PlayerOverall;
   country?: string;
-  team?: string;
   image?: string;
-  position: 'MEI' | 'ATK' | 'DEF' | 'GOL';
+  position: PlayerPosition;
   isChampion: boolean;
-}
-
-export interface OverallDataRequested {
-  pace: number;
-  shooting: number;
-  passing: number;
-  dribble: number;
-  defense: number;
-  physics: number;
-  overall: number;
+  goalsCount?: number;
 }
 
 export interface CreatePlayerDataRequested {
@@ -56,7 +53,7 @@ export interface CreatePlayerDataRequested {
   country?: string;
   team?: string;
   image?: string;
-  position: 'MEI' | 'ATK' | 'DEF' | 'GOL';
-  overall: OverallDataRequested;
+  position: PlayerPosition;
+  overall: PlayerOverall;
   isChampion: boolean;
 }
