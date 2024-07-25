@@ -1,3 +1,4 @@
+import { TeamResponse } from "./match";
 import { PlayerResponse } from "./player";
 
 export interface WeekResponse {
@@ -5,14 +6,6 @@ export interface WeekResponse {
   date: string;
   teams: TeamResponse[];
 }
-
-export interface TeamResponse {
-  id: string;
-  weekId: string;
-  players: TeamMemberResponse[];
-  champion: boolean;
-}
-
 export interface TeamMemberResponse {
   id: string;
   player: PlayerResponse;

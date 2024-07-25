@@ -5,8 +5,6 @@ export interface MatchResponse {
   date: string;
   homeTeamId: string;
   awayTeamId: string;
-  homeTeam: TeamResponse;
-  awayTeam: TeamResponse;
   result?: MatchResultResponse;
   goals: GoalResponse[];
 }
@@ -26,8 +24,9 @@ export interface GoalDetails {
 
 export interface TeamResponse {
   id: string;
-  name: string;
   players: PlayerResponse[];
+  matchesHome: MatchResponse[];
+  matchesAway: MatchResponse[];
 }
 
 export interface CreateWeekWithTeamsBody {
