@@ -5,10 +5,11 @@ import { QueryRequest } from '@/utils/QueryRequest';
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333/api';
 const ORGANIZATION_ID = 'your-organization-id';
 
+
 export async function getWeekById(weekId: string) {
-  const queryRequest = new QueryRequest<WeekResponse>(BASE_URL, ORGANIZATION_ID);
+  const queryRequest = new QueryRequest<WeekResponse>(BASE_URL, '');
   queryRequest.addDefaultHeaders();
-  return queryRequest.getById(weekId, 'get_week');
+  return queryRequest.get(`week/${weekId}`);
 }
 
 export async function getWeeks() {
