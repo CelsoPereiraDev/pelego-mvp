@@ -2,12 +2,10 @@
 
 import { MatchForm } from '@/components/MatchForm';
 import { mapFormDataToBackend } from '@/mapper/createMatches';
-import { createGoals } from '@/services/matchs/resources';
 import { useCreateMatches } from '@/services/matchs/useCreateMatch';
 
 import { useCreateWeekWithTeams } from '@/services/matchs/useCreateWeekWithTeams';
 import { usePlayers } from '@/services/player/usePlayers';
-import { GoalDetails } from '@/types/match';
 import { Player } from '@/types/player';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm, useWatch } from 'react-hook-form';
@@ -43,7 +41,7 @@ const getAvailablePlayers = (allPlayers: Player[], selectedPlayers: string[]) =>
 };
 
 const CreateWeekAndMatchesForm: React.FC = () => {
-  const { register, handleSubmit, control, formState: { errors }, setValue } = useForm<CreateMatch>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<CreateMatch>({
     defaultValues: {
       teams: [{ players: [] }, { players: [] }]
     }
@@ -103,26 +101,6 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     const createdMatches = await createNewMatches({ matches: matchesData });
     console.log('Matches created:', createdMatches);
 
-    const goalPromises = createdMatches.map(async (match, index) => {
-      const matchData = matchesData[index];
-      const goalsData: GoalDetails[] = [
-        ...matchData.homeGoals.map(goal => ({
-          ...goal,
-          matchId: match.id
-        })),
-        ...matchData.awayGoals.map(goal => ({
-          ...goal,
-          matchId: match.id
-        }))
-      ];
-
-      if (goalsData.length > 0) {
-        console.log("Creating goals with data:", goalsData);
-        await createGoals(goalsData);
-      }
-    });
-
-    await Promise.all(goalPromises);
     alert('Matches created successfully!');
   } catch (error) {
     console.error('Error creating matches:', error);
