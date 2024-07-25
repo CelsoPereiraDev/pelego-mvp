@@ -12,7 +12,7 @@ export function useWeek(weekId: string) {
   return {
     week: data,
     mutate,
-    error,
+    isError: error,
     isLoading: !error && !data,
   };
 }
