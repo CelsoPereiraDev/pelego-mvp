@@ -3,7 +3,7 @@ import { PlayerResponse } from "./player";
 
 export interface WeekResponse {
   id: string;
-  date: string;
+  date: Date;
   teams: TeamResponse[];
 }
 export interface TeamMemberResponse {

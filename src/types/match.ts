@@ -24,9 +24,17 @@ export interface GoalDetails {
 
 export interface TeamResponse {
   id: string;
-  players: PlayerResponse[];
+  champion: boolean;
+  players: TeamMember[];
   matchesHome: MatchResponse[];
   matchesAway: MatchResponse[];
+  weekId: string;
+}
+export interface TeamMember {
+  id: string;
+  player: PlayerResponse;
+  playerId: string;
+  teamId: string;
 }
 
 export interface CreateWeekWithTeamsBody {
@@ -45,6 +53,7 @@ export interface GoalResponse {
   playerId: string;
   match: MatchResponse;
   player: PlayerResponse;
+  goals: number;
 }
 
 export type CreateMatch = {
