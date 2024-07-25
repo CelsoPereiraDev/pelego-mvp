@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from "react";
-import { calculateTeamOverall, hillClimbing } from "@/utils/createTeam";
 import Field from "@/components/Field";
-import PlayerMock from "@/utils/mockPlayers";
-import Select from 'react-select';
-import MultipleStopIcon from '@mui/icons-material/MultipleStop';
-import { Team } from "@/types/team";
+import { usePlayers } from "@/services/player/usePlayers";
 import { Player } from "@/types/player";
+import { Team } from "@/types/team";
+import { calculateTeamOverall, hillClimbing } from "@/utils/createTeam";
+import MultipleStopIcon from '@mui/icons-material/MultipleStop';
+import { useState } from "react";
+import Select from 'react-select';
 
 export default function Home() {
+  const { players } = usePlayers()
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
   const [quantityTeams, setQuantityTeams] = useState<number | null>(null);
@@ -68,14 +69,14 @@ export default function Home() {
     setTeams(updatedTeams);
   };
 
-  const data = PlayerMock();
+  const data = players;
 
   const quantityTeamsData = [
     { label: 2, value: 2 },
     { label: 3, value: 3 },
   ];
 
-  const availablePlayers = data.filter(player => !selectedPlayers.some(selected => selected.name === player.name));
+  const availablePlayers = data?.filter(player => !selectedPlayers.some(selected => selected.name === player.name));
 
 
   return (
@@ -86,7 +87,7 @@ export default function Home() {
           <div className="flex flex-col items-center space-y-4">
           <Select
             isMulti
-            options={availablePlayers.map(player => ({ label: player.name, value: player }))}
+            options={availablePlayers?.map(player => ({ label: player.name, value: player }))}
             value={selectedPlayers.map(player => ({ label: player.name, value: player }))}
             onChange={(selectedOptions) => setSelectedPlayers(selectedOptions.map((option: {
               label: string;
