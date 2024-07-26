@@ -52,116 +52,120 @@ export const MatchForm = ({ index, control, teamFields, players }: MatchFormProp
   };
 
   return (
-    <div className="flex flex-row items-start gap-4 w-[530px]">
-      <h3 className="my-auto">Jogo {index + 1}</h3>
-      <div className="flex flex-col items-start gap-2 max-w-52">
-        <div className="flex flex-row items-center gap-2 w-full justify-between">
-          <Controller
-            control={control}
-            name={`matches.${index}.homeTeamId`}
-            render={({ field }) => (
-              <Select
-                options={teamsOptions}
-                value={teamsOptions.find((option) => option.value === field.value) || null}
-                onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+    <div className="flex flex-col items-start gap-4 w-[600px] border-[1px] border-[#4D7133] p-4 rounded-lg">
+      <h3 className="my-auto text-[#333333]">Jogo {index + 1}</h3>
+      <div className="flex flex-row items-start gap-4 max-w-[600px] w-full">
+        <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-row items-center gap-2 w-full justify-between">
+            <Controller
+              control={control}
+              name={`matches.${index}.homeTeamId`}
+              render={({ field }) => (
+                <Select
+                  options={teamsOptions}
+                  value={teamsOptions.find((option) => option.value === field.value) || null}
+                  onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+                />
+              )}
+            />
+            <div className="max-w-28">
+              <Controller
+                control={control}
+                name={`matches.${index}.homeGoals.goalsCount`}
+                render={({ field }) => (
+                  <Select
+                    options={goalsOptions}
+                    value={goalsOptions.find((option) => option.value === field.value) || null}
+                    onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+                  />
+                )}
               />
-            )}
-          />
-          <div className="max-w-28">
-            <Controller
-              control={control}
-              name={`matches.${index}.homeGoals.goalsCount`}
-              render={({ field }) => (
-                <Select
-                  options={goalsOptions}
-                  value={goalsOptions.find((option) => option.value === field.value) || null}
-                  onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
-                />
-              )}
-            />
+            </div>
           </div>
+            {homeGoalsInputs.map((_, goalIndex) => (
+              <div key={`home-goal-${goalIndex}`} className="flex flex-row gap-2">
+                <Controller
+                  control={control}
+                  name={`matches.${index}.homeGoals.whoScores.${goalIndex}.goals`}
+                  render={({ field }) => (
+                    <Select
+                      options={goalsOptions}
+                      value={goalsOptions.find((option) => option.value === String(field.value)) || null}
+                      onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name={`matches.${index}.homeGoals.whoScores.${goalIndex}.playerId`}
+                  render={({ field }) => (
+                    <Select
+                      options={playerOptions(homePlayersForTeam)}
+                      value={playerOptions(homePlayersForTeam).find(option => option.value === field.value) || null}
+                      onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+                    />
+                  )}
+                />
+              </div>
+            ))}
         </div>
-        {homeGoalsInputs.map((_, goalIndex) => (
-          <div key={`home-goal-${goalIndex}`} className="flex flex-row gap-2">
-            <Controller
+        <span className="my-auto text-[#333333]">X</span>
+        <div className="flex flex-col items-start gap-2 max-w-52">
+          <div className="flex flex-row items-center gap-2 w-full justify-between">
+            <div className="max-w-28">
+              <Controller
+                  control={control}
+                  name={`matches.${index}.awayGoals.goalsCount`}
+                  render={({ field }) => (
+                    <Select
+                      options={goalsOptions}
+                      value={goalsOptions.find((option) => option.value === field.value) || null}
+                      onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+                    />
+                  )}
+                />
+            </div>
+            <div className="">
+              <Controller
               control={control}
-              name={`matches.${index}.homeGoals.whoScores.${goalIndex}.goals`}
+              name={`matches.${index}.awayTeamId`}
               render={({ field }) => (
                 <Select
-                  options={goalsOptions}
-                  value={goalsOptions.find((option) => option.value === String(field.value)) || null}
+                  options={teamsOptions}
+                  value={teamsOptions.find((option) => option.value === field.value) || null}
                   onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
                 />
               )}
             />
-            <Controller
-              control={control}
-              name={`matches.${index}.homeGoals.whoScores.${goalIndex}.playerId`}
-              render={({ field }) => (
-                <Select
-                  options={playerOptions(homePlayersForTeam)}
-                  value={playerOptions(homePlayersForTeam).find(option => option.value === field.value) || null}
-                  onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
-                />
-              )}
-            />
+            </div>
           </div>
-        ))}
-      </div>
-      <span className="my-auto">X</span>
-      <div className="flex flex-col items-start gap-2 max-w-52">
-        <div className="flex flex-row items-center gap-2 w-full justify-between">
-          <Controller
-            control={control}
-            name={`matches.${index}.awayTeamId`}
-            render={({ field }) => (
-              <Select
-                options={teamsOptions}
-                value={teamsOptions.find((option) => option.value === field.value) || null}
-                onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+          {awayGoalsInputs.map((_, goalIndex) => (
+            <div key={`away-goal-${goalIndex}`} className="flex flex-row gap-2">
+              <Controller
+                control={control}
+                name={`matches.${index}.awayGoals.whoScores.${goalIndex}.goals`}
+                render={({ field }) => (
+                  <Select
+                    options={goalsOptions}
+                    value={goalsOptions.find((option) => option.value === String(field.value)) || null}
+                    onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+                  />
+                )}
               />
-            )}
-          />
-          <div className="max-w-28">
-            <Controller
-              control={control}
-              name={`matches.${index}.awayGoals.goalsCount`}
-              render={({ field }) => (
-                <Select
-                  options={goalsOptions}
-                  value={goalsOptions.find((option) => option.value === field.value) || null}
-                  onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
-                />
-              )}
-            />
-          </div>
+              <Controller
+                control={control}
+                name={`matches.${index}.awayGoals.whoScores.${goalIndex}.playerId`}
+                render={({ field }) => (
+                  <Select
+                    options={playerOptions(awayPlayersForTeam)}
+                    value={playerOptions(awayPlayersForTeam).find(option => option.value === field.value) || null}
+                    onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
+                  />
+                )}
+              />
+            </div>
+          ))}
         </div>
-        {awayGoalsInputs.map((_, goalIndex) => (
-          <div key={`away-goal-${goalIndex}`} className="flex flex-row gap-2">
-            <Controller
-              control={control}
-              name={`matches.${index}.awayGoals.whoScores.${goalIndex}.goals`}
-              render={({ field }) => (
-                <Select
-                  options={goalsOptions}
-                  value={goalsOptions.find((option) => option.value === String(field.value)) || null}
-                  onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name={`matches.${index}.awayGoals.whoScores.${goalIndex}.playerId`}
-              render={({ field }) => (
-                <Select
-                  options={playerOptions(awayPlayersForTeam)}
-                  value={playerOptions(awayPlayersForTeam).find(option => option.value === field.value) || null}
-                  onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
-                />
-              )}
-            />
-          </div>
-        ))}
       </div>
     </div>
   );

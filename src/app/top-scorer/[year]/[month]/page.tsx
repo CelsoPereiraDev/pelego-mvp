@@ -17,7 +17,7 @@ const TopScorersByDate: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {isError.message}</div>;
 
-  function mapMonthNumberToText(monthNumber) {
+  function mapMonthNumberToText(monthNumber:number) {
   const months = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
     "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"

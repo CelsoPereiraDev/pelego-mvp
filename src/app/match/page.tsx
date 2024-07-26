@@ -7,6 +7,10 @@ import { useCreateMatches } from '@/services/matchs/useCreateMatch';
 import { useCreateWeekWithTeams } from '@/services/matchs/useCreateWeekWithTeams';
 import { usePlayers } from '@/services/player/usePlayers';
 import { Player } from '@/types/player';
+import { Save } from '@mui/icons-material';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import QueuePlayNextIcon from '@mui/icons-material/QueuePlayNext';
+import ScoreboardIcon from '@mui/icons-material/Scoreboard';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import Select from 'react-select';
@@ -36,6 +40,10 @@ export type CreateMatch = {
   }[];
 };
 
+interface TeamPoints {
+  [key: string]: number;
+}
+
 const getAvailablePlayers = (allPlayers: Player[], selectedPlayers: string[]) => {
   return allPlayers.filter(player => !selectedPlayers.includes(player.id));
 };
@@ -46,7 +54,9 @@ const CreateWeekAndMatchesForm: React.FC = () => {
       teams: [{ players: [] }, { players: [] }]
     }
   });
-  const [createdTeams, setCreatedTeams] = useState<{ id: string }[]>([]);
+  const [createdTeams, setCreatedTeams] = useState<{
+    players: any; id: string 
+}[]>([]);
   const [weekId, setWeekId] = useState<string | null>(null);
   const selectedPlayers = useWatch({ control, name: 'teams' }).flatMap((team: { players: string[] }) => team.players);
   const { players, isLoading } = usePlayers();
@@ -62,6 +72,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   const { createWeek } = useCreateWeekWithTeams();
   const { createNewMatches } = useCreateMatches();
 
+
   const handleCreateTeams: SubmitHandler<CreateMatch> = async data => {
     try {
       const weekData = {
@@ -69,9 +80,8 @@ const CreateWeekAndMatchesForm: React.FC = () => {
         teams: data.teams.map(team => team.players)
       };
 
-      console.log("Creating week with data:", weekData);
       const result = await createWeek(weekData);
-      console.log("Week created:", result);
+      
 
       if (!result.createdTeams || result.createdTeams.length === 0) {
         throw new Error("No teams were created");
@@ -88,29 +98,75 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   };
 
   const handleCreateMatches: SubmitHandler<CreateMatch> = async data => {
-  console.log("🚀 ~ data:", data)
   try {
     if (!weekId) {
       throw new Error("Week ID must be set before creating matches.");
     }
 
-    // Pass the created teams and weekId to the mapper
     const { matchesData } = mapFormDataToBackend(data, createdTeams, weekId);
-    console.log("Matches data to be created:", matchesData);
-
     const createdMatches = await createNewMatches({ matches: matchesData });
-    console.log('Matches created:', createdMatches);
 
-    alert('Matches created successfully!');
+    const teamPoints: TeamPoints = {};
+
+    createdMatches.forEach(match => {
+      const { homeTeamId, awayTeamId, result } = match;
+
+      if (!teamPoints[homeTeamId]) {
+        teamPoints[homeTeamId] = 0;
+      }
+      if (!teamPoints[awayTeamId]) {
+        teamPoints[awayTeamId] = 0;
+      }
+
+      const homeGoals = result?.homeGoals || 0;
+      const awayGoals = result?.awayGoals || 0;
+
+      if (homeGoals > awayGoals) {
+        teamPoints[homeTeamId] += 3; // Vitória do time da casa
+      } else if (homeGoals < awayGoals) {
+        teamPoints[awayTeamId] += 3; // Vitória do time visitante
+      } else {
+        teamPoints[homeTeamId] += 1; // Empate
+        teamPoints[awayTeamId] += 1; // Empate
+      }
+    });
+
+    const pointsArray = Object.values(teamPoints);
+    const maxPoints = Math.max(...pointsArray);
+    const championTeams = Object.keys(teamPoints).filter(
+      (team) => teamPoints[team] === maxPoints
+    );
+
+    const updatedTeams = createdTeams.map((team) => {
+      if (championTeams.length === 1 && team.id === championTeams[0]) {
+        return {
+          ...team,
+          players: team.players.map((player) => ({
+            ...player,
+            isChampion: true,
+          })),
+          champion: true,
+        };
+      } else {
+        return {
+          ...team,
+          players: team.players.map((player) => ({
+            ...player,
+            isChampion: false,
+          })),
+          champion: false,
+        };
+      }
+    });
+
+    // await update(updatedTeams);
+
+    alert('Matches created successfully! Champions of the week have been set.');
   } catch (error) {
     console.error('Error creating matches:', error);
     alert('Failed to create matches');
   }
 };
-
-
-
-
 
 
   const handleAddTeam = useCallback(() => {
@@ -133,7 +189,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   if (isLoading) return <div>Loading players...</div>;
 
   return (
-    <div className="h-screen bg-[#212121] w-screen flex justify-start flex-col p-12 items-center gap-7">
+    <div className="h-screen bg-[#333333] w-screen flex justify-start flex-col p-12 items-center gap-7">
       <div className="max-w-[1440px] p-6 bg-white h-full rounded-lg overflow-auto text-black">
         <form onSubmit={handleSubmit(handleCreateTeams)}>
           <div>
@@ -147,7 +203,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
             <div className="flex flex-row gap-4 items-center mt-4">
               {teamFields.map((team, index) => (
                 <div key={team.id} className="flex flex-row gap-4 items-center">
-                  <h3>Team {index + 1}</h3>
+                  <h3>Time {index + 1}</h3>
                   <Controller
                     control={control}
                     name={`teams.${index}.players`}
@@ -167,24 +223,25 @@ const CreateWeekAndMatchesForm: React.FC = () => {
                 </div>
               ))}
             </div>
-            <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded my-4" onClick={handleAddTeam}>Adicionar Time</button>
           </div>
-
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">Cadastrar Times</button>
+            <div className='flex flex-row gap-4 my-4'>
+              <button type="button" className="px-4 py-2 bg-[#4D7133] text-white rounded flex flex-row gap-2 items-center justify-center w-56" onClick={handleAddTeam}><GroupAddIcon/>Adicionar Time</button>
+              <button type="submit" className="px-4 py-2 bg-white border-[1px] border-[#4D7133] text-[#4D7133] rounded flex flex-row gap-2 items-center w-56 justify-center"><QueuePlayNextIcon/>Cadastrar Times</button>
+            </div>
         </form>
 
         <form onSubmit={handleSubmit(handleCreateMatches)}>
-          <div className="flex flex-col gap-8 mt-8">
+          <div className="flex flex-col gap-4 mt-8">
             {matchFields.map((match, index) => (
               <MatchForm key={match.id} index={index} control={control} teamFields={teamFields} players={players} />
             ))}
           </div>
 
           <div className="flex flex-row gap-4 mt-4">
-            <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded" onClick={handleAddMatch}>
-              Adicionar Partida
+            <button type="button" className="px-4 py-2 bg-[#4D7133] text-white rounded flex flex-row gap-2 items-center justify-center w-56" onClick={handleAddMatch}>
+              <ScoreboardIcon/>Adicionar Partida
             </button>
-            <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">Cadastrar Partidas</button>
+            <button type="submit" className="px-4 py-2 bg-white border-[1px] border-[#4D7133] text-[#4D7133] rounded flex flex-row gap-2 items-center w-56 justify-center"><Save/>Cadastrar Partidas</button>
           </div>
         </form>
       </div>
