@@ -2,11 +2,6 @@ import { CreateMatch } from '@/app/match/page';
 import { CreateMatchDataRequested } from '@/types/match';
 
 export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: string }[], weekId: string) {
-  const weekData = {
-    date: new Date(data.date),
-    teams: data.teams.map(team => team.players)
-  };
-
   const matchesData: CreateMatchDataRequested[] = data.matches.map(match => {
     const homeTeam = createdTeams[parseInt(match.homeTeamId, 10)];
     const awayTeam = createdTeams[parseInt(match.awayTeamId, 10)];
@@ -16,7 +11,7 @@ export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: stri
     }
 
     return {
-      weekId,  // Inclui o weekId no objeto de partida
+      weekId,
       date: new Date(data.date).toISOString(),
       homeTeamId: homeTeam.id,
       awayTeamId: awayTeam.id,
@@ -35,5 +30,5 @@ export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: stri
     };
   });
 
-  return { weekData, matchesData };
+  return { matchesData };
 }
