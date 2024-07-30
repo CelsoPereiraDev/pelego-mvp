@@ -11,7 +11,7 @@ export async function createMatch(matchData: CreateMatchDataRequested) {
 }
 
 export async function createMatches(matchesData: { matches: CreateMatchDataRequested[] }) {
-  const queryRequest = new QueryRequest<MatchResponse[], { matches: CreateMatchDataRequested[] }>(BASE_URL, CLIENT_ID);
+  const queryRequest = new QueryRequest<{ message: string; createdMatches: MatchResponse[] }, { matches: CreateMatchDataRequested[] }>(BASE_URL, CLIENT_ID);
   queryRequest.addDefaultHeaders();
   return queryRequest.post('create_matches', matchesData);
 }
