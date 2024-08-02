@@ -14,7 +14,7 @@ export interface TeamMemberResponse {
 
 export interface Week {
   id: string;
-  date: string;
+  date: Date;
   teams: {
     id: string;
     players: {

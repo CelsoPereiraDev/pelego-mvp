@@ -8,7 +8,6 @@ import React, { useEffect, useState } from 'react';
 
 const WeeksList: React.FC = () => {
   const { weeks, isLoading, error } = useWeeks();
-  const [selectedWeekId, setSelectedWeekId] = useState<string | null>(null);
   const [deletingWeekId, setDeletingWeekId] = useState<string | null>(null);
   const { delete: deleteWeek } = useWeek(deletingWeekId || '');
 
