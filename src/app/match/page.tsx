@@ -28,6 +28,7 @@ export type CreateMatch = {
       whoScores: {
         goals: number;
         playerId: string;
+        ownGoalPlayerId?: string;
       }[];
     };
     awayGoals: {
@@ -35,15 +36,12 @@ export type CreateMatch = {
       whoScores: {
         goals: number;
         playerId: string;
+        ownGoalPlayerId?: string;
       }[];
     };
     awayTeamId: string;
   }[];
 };
-
-interface TeamPoints {
-  [key: string]: number;
-}
 
 const getAvailablePlayers = (allPlayers: Player[], selectedPlayers: string[]) => {
   return allPlayers.filter(player => !selectedPlayers.includes(player.id));
@@ -67,7 +65,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     name: 'teams'
   });
 
-  const { fields: matchFields, append: appendMatch } = useFieldArray({
+  const { fields: matchFields, append: appendMatch, remove: removeMatch } = useFieldArray({
     control,
     name: 'matches'
   });
@@ -97,87 +95,80 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     console.error('Error creating teams:', error);
     alert('Failed to create teams');
   }
-};
+  };
 
 
   const handleCreateMatches: SubmitHandler<CreateMatch> = async data => {
-  try {
-    if (!weekId) {
-      throw new Error("Week ID must be set before creating matches.");
+    try {
+      if (!weekId) {
+        throw new Error("Week ID must be set before creating matches.");
+      }
+
+      const { matchesData } = mapFormDataToBackend(data, createdTeams, weekId);
+      const createdMatchesResponse = await createNewMatches({ matches: matchesData });
+      
+
+      const createdMatches = createdMatchesResponse.createdMatches;
+      if (!Array.isArray(createdMatches)) {
+        throw new Error("Expected createdMatches to be an array, but got:", createdMatches);
+      }
+      
+
+      const teamPoints: Record<string, number> = {};
+
+      createdMatches.forEach(match => {
+        const { homeTeamId, awayTeamId, result } = match;
+        
+
+        if (!teamPoints[homeTeamId]) {
+          teamPoints[homeTeamId] = 0;
+        }
+        if (!teamPoints[awayTeamId]) {
+          teamPoints[awayTeamId] = 0;
+        }
+
+        const homeGoals = result?.homeGoals || 0;
+        const awayGoals = result?.awayGoals || 0;
+
+        
+
+        if (homeGoals > awayGoals) {
+          teamPoints[homeTeamId] += 3; // Vitória do time da casa
+          
+        } else if (homeGoals < awayGoals) {
+          teamPoints[awayTeamId] += 3; // Vitória do time visitante
+          
+        } else {
+          teamPoints[homeTeamId] += 1; // Empate
+          teamPoints[awayTeamId] += 1; // Empate
+          
+        }
+      });
+
+      const pointsArray = Object.values(teamPoints);
+      const maxPoints = Math.max(...pointsArray);
+      const championTeams = Object.keys(teamPoints).filter(
+        (team) => teamPoints[team] === maxPoints
+      );
+      
+      const updatedTeams = createdTeams.map((team) => ({
+        id: team.id,
+        champion: championTeams.length === 1 && team.id === championTeams[0],
+        points: teamPoints[team.id] || 0,
+        players: team.players.map((player) => ({
+          id: player.id,
+          isChampion: championTeams.length === 1 && team.id === championTeams[0],
+        })),
+      }));
+      
+      await update(updatedTeams);
+
+      alert('Matches created successfully! Champions of the week have been set.');
+    } catch (error) {
+      console.error('Error creating matches:', error);
+      alert('Failed to create matches');
     }
-
-    const { matchesData } = mapFormDataToBackend(data, createdTeams, weekId);
-    const createdMatchesResponse = await createNewMatches({ matches: matchesData });
-    console.log("🆑 ~ createdMatchesResponse:", createdMatchesResponse);
-
-    const createdMatches = createdMatchesResponse.createdMatches;
-    if (!Array.isArray(createdMatches)) {
-      throw new Error("Expected createdMatches to be an array, but got:", createdMatches);
-    }
-    console.log("🆑 ~ createdMatches:", createdMatches);
-
-    const teamPoints: Record<string, number> = {};
-
-    createdMatches.forEach(match => {
-      const { homeTeamId, awayTeamId, result } = match;
-      console.log("🆑 ~ Processing match:", match);
-
-      if (!teamPoints[homeTeamId]) {
-        teamPoints[homeTeamId] = 0;
-      }
-      if (!teamPoints[awayTeamId]) {
-        teamPoints[awayTeamId] = 0;
-      }
-
-      const homeGoals = result?.homeGoals || 0;
-      const awayGoals = result?.awayGoals || 0;
-
-      console.log(`🆑 ~ homeGoals: ${homeGoals}, awayGoals: ${awayGoals}`);
-
-      if (homeGoals > awayGoals) {
-        teamPoints[homeTeamId] += 3; // Vitória do time da casa
-        console.log(`🆑 ~ homeTeam ${homeTeamId} wins, new points: ${teamPoints[homeTeamId]}`);
-      } else if (homeGoals < awayGoals) {
-        teamPoints[awayTeamId] += 3; // Vitória do time visitante
-        console.log(`🆑 ~ awayTeam ${awayTeamId} wins, new points: ${teamPoints[awayTeamId]}`);
-      } else {
-        teamPoints[homeTeamId] += 1; // Empate
-        teamPoints[awayTeamId] += 1; // Empate
-        console.log(`🆑 ~ draw, homeTeam ${homeTeamId} new points: ${teamPoints[homeTeamId]}, awayTeam ${awayGoals} new points: ${teamPoints[awayTeamId]}`);
-      }
-    });
-
-    const pointsArray = Object.values(teamPoints);
-    const maxPoints = Math.max(...pointsArray);
-    const championTeams = Object.keys(teamPoints).filter(
-      (team) => teamPoints[team] === maxPoints
-    );
-    console.log("🆑 ~ championTeams:", championTeams);
-
-    const updatedTeams = createdTeams.map((team) => ({
-      id: team.id,
-      champion: championTeams.length === 1 && team.id === championTeams[0],
-      points: teamPoints[team.id] || 0,
-      players: team.players.map((player) => ({
-        id: player.id,
-        isChampion: championTeams.length === 1 && team.id === championTeams[0],
-      })),
-    }));
-    console.log("🆑 ~ updatedTeams ~ updatedTeams:", updatedTeams);
-
-    await update(updatedTeams);
-
-    alert('Matches created successfully! Champions of the week have been set.');
-  } catch (error) {
-    console.error('Error creating matches:', error);
-    alert('Failed to create matches');
-  }
-};
-
-
-
-
-
+  };
 
   const handleAddTeam = useCallback(() => {
     appendTeam({ players: [] });
@@ -199,8 +190,8 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   if (isLoading) return <div>Loading players...</div>;
 
   return (
-    <div className="h-screen bg-[#333333] w-screen flex justify-start flex-col p-12 items-center gap-7">
-      <div className="max-w-[1440px] p-6 bg-white h-full rounded-lg overflow-auto text-black">
+    <div className="min-h-screen bg-[#333333] w-screen flex justify-start flex-col p-12 items-center gap-7">
+      <div className="max-w-[1440px] p-6 bg-white min-h-full rounded-lg overflow-auto text-black">
         <form onSubmit={handleSubmit(handleCreateTeams)}>
           <div>
             <label className='mr-4'>Data</label>
@@ -243,7 +234,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
         <form onSubmit={handleSubmit(handleCreateMatches)}>
           <div className="flex flex-col gap-4 mt-8">
             {matchFields.map((match, index) => (
-              <MatchForm key={match.id} index={index} control={control} teamFields={teamFields} players={players} />
+              <MatchForm key={match.id} index={index} control={control} teamFields={teamFields} players={players}  removeMatch={removeMatch}/>
             ))}
           </div>
 

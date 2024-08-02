@@ -16,14 +16,18 @@ const TopScorersByYear: React.FC = () => {
   if (isError) return <div>Error: {isError.message}</div>;
 
   const playerGoalsMap: { [key: string]: { name: string; goals: number } } = {};
+  console.log("🆑 ~ playerGoalsMap:", playerGoalsMap)
 
   weeks?.forEach((week) => {
     week.teams.flatMap((team) => team.matchesHome.concat(team.matchesAway)).forEach((match) => {
       match.goals.forEach((goal) => {
-        if (!playerGoalsMap[goal.player.id]) {
-          playerGoalsMap[goal.player.id] = { name: goal.player.name, goals: 0 };
+        console.log("🆑 ~ match.goals.forEach ~ match:", goal)
+        if (goal.player) { // Check if it's a regular goal, not an own goal
+          if (!playerGoalsMap[goal.ownGoalPlayerId]) {
+            playerGoalsMap[goal.player.id] = { name: goal.player.name, goals: 0 };
+          }
+          playerGoalsMap[goal.player.id].goals += goal.goals;
         }
-        playerGoalsMap[goal.player.id].goals += goal.goals;
       });
     });
   });

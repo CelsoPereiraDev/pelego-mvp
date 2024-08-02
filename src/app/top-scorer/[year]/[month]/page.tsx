@@ -30,10 +30,13 @@ const TopScorersByDate: React.FC = () => {
   weeks?.forEach((week) => {
     week.teams.flatMap((team) => team.matchesHome.concat(team.matchesAway)).forEach((match) => {
       match.goals.forEach((goal) => {
-        if (!playerGoalsMap[goal.player.id]) {
-          playerGoalsMap[goal.player.id] = { name: goal.player.name, goals: 0 };
+        console.log("🆑 ~ match.goals.forEach ~ match:", goal)
+        if (goal.player) {
+          if (!playerGoalsMap[goal.ownGoalPlayerId]) {
+            playerGoalsMap[goal.player.id] = { name: goal.player.name, goals: 0 };
+          }
+          playerGoalsMap[goal.player.id].goals += goal.goals;
         }
-        playerGoalsMap[goal.player.id].goals += goal.goals;
       });
     });
   });

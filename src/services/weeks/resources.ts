@@ -29,5 +29,11 @@ export async function getWeeksByDate(year: string, month?: string): Promise<Week
   return response.json();
 }
 
+export async function deleteWeek(weekId: string) {
+  const queryRequest = new QueryRequest<void>(BASE_URL, '');
+  queryRequest.addDefaultHeaders();
+  return queryRequest.delete(`weeks/${weekId}`);
+}
+
 
 

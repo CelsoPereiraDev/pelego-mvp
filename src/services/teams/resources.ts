@@ -15,3 +15,5 @@ export async function updateTeams(teamsData: TeamResponse[]) {
   queryRequest.addDefaultHeaders();
   return queryRequest.patch('update_teams', teamsData);
 }
+
+
