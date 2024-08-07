@@ -60,9 +60,9 @@ const WeeksList: React.FC = () => {
             key={week.id}
             className="text-black flex flex-row gap-4 cursor-pointer justify-between"
           >
-            <div onClick={() => goToWeekPage(week.id)}>
+            <div onClick={() => goToWeekPage(week.id)} className='flex flex-row gap-2'>
               <span>Semana {index + 1}</span>
-              <span>{formatDate(week.date)}</span>
+              <span>{formatDate(String(week.date))}</span>
             </div>
             <button 
               className="text-red-500"

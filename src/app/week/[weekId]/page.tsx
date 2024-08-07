@@ -21,6 +21,13 @@ type PlayerGoalsMap = {
   };
 };
 
+type PlayerAssistsMap = {
+  [key: string]: {
+    name: string;
+    assist: number;
+  };
+};
+
 type OwnGoalsMap = {
   [key: string]: {
     name: string;
@@ -49,6 +56,7 @@ const WeekDetails: React.FC = () => {
   });
 
   const uniqueMatches: MatchResponse[] = [];
+  console.log("🆑 ~ uniqueMatches:", uniqueMatches)
   const matchIds = new Set();
 
   week?.teams.flatMap((team) => team.matchesHome.concat(team.matchesAway)).forEach((match) => {
@@ -59,6 +67,7 @@ const WeekDetails: React.FC = () => {
   });
 
   const playerGoalsMap: PlayerGoalsMap = {};
+  const playerAssistMap: PlayerAssistsMap = {};
   const ownGoalsMap: OwnGoalsMap = {};
   uniqueMatches.forEach((match) => {
     match.goals.forEach((goal) => {
@@ -75,7 +84,6 @@ const WeekDetails: React.FC = () => {
       }
     });
   });
-  console.log("🆑 ~ uniqueMatches.forEach ~ uniqueMatches:", uniqueMatches);
 
   const teamPointsMap: TeamPointsMap = {};
   week?.teams.forEach(team => {
