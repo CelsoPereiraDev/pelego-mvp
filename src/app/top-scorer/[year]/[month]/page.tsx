@@ -6,13 +6,19 @@ import { useWeeksByDate } from '@/services/weeks/useWeeksByDate';
 import { useParams } from 'next/navigation';
 import React from 'react';
 
+interface PlayerGoalsMap {
+  [playerId: string]: {
+    name: string;
+    goals: number;
+  };
+}
+
 const TopScorersByDate: React.FC = () => {
   const params = useParams();
   const year = params.year as string;
   const month = params.month as string | undefined;
 
   const { weeks, isLoading, isError } = useWeeksByDate(year, month);
-  console.log("🚀 ~ weeks:", weeks)
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {isError.message}</div>;
@@ -25,19 +31,25 @@ const TopScorersByDate: React.FC = () => {
   return months[monthNumber - 1];
 }
 
-  const playerGoalsMap: { [key: string]: { name: string; goals: number } } = {};
+  const playerGoalsMap: PlayerGoalsMap = {};
+
+
+  const processedMatches = new Set<string>();
 
   weeks?.forEach((week) => {
     week.teams.flatMap((team) => team.matchesHome.concat(team.matchesAway)).forEach((match) => {
-      match.goals.forEach((goal) => {
-        console.log("🆑 ~ match.goals.forEach ~ match:", goal)
-        if (goal.player) {
-          if (!playerGoalsMap[goal.ownGoalPlayerId]) {
-            playerGoalsMap[goal.player.id] = { name: goal.player.name, goals: 0 };
+      if (!processedMatches.has(match.id)) {
+        processedMatches.add(match.id);
+
+        match.goals.forEach((goal) => {
+          if (goal.player) {
+            if (!playerGoalsMap[goal.player.id]) {
+              playerGoalsMap[goal.player.id] = { name: goal.player.name, goals: 0 };
+            }
+            playerGoalsMap[goal.player.id].goals += goal.goals;
           }
-          playerGoalsMap[goal.player.id].goals += goal.goals;
-        }
-      });
+        });
+      }
     });
   });
 
@@ -53,7 +65,7 @@ const TopScorersByDate: React.FC = () => {
         <ul className="flex flex-col gap-2">
           {topScorers.map((player, index) => (
             <li key={index}>
-              {player.name} - {player.goals} gol(s)
+              {player.name} - {player.goals} {player.goals === 1 ? 'gol' : 'gols'}
             </li>
           ))}
         </ul>
