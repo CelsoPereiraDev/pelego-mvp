@@ -1,5 +1,6 @@
 'use client'
 import { Player } from "@/types/player";
+import { NH } from "@/utils/images";
 import Image from "next/image";
 import React from "react";
 import Flag from "react-world-flags";
@@ -55,9 +56,9 @@ export default function PlayerCard({ playerData }: { playerData: Player }) {
                             <div className="w-[54px] flex justify-center pt-[6px] ml-[5px]">
                                      <Flag code={playerData.country}   alt="flag" width={48} height={22}/>
                             </div>
-                            {playerData.team && (
+                            {playerData.team === 'NH' && (
                                 <div className="pt-[6px] ml-1">
-                                    <Image src={typeof playerData.team === "string" ? playerData.team : playerData.team.src} alt="team" width={48} height={48} />
+                                    <Image src={NH} alt="team" width={48} height={48} />
                                 </div>
                             )}
                         </div>
