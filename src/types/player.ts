@@ -28,10 +28,10 @@ export interface Player {
   image?: string;
   position: PlayerPosition;
   isChampion: boolean;
-  monthLVP: boolean;
-  monthTopPointer: boolean;
-  monthStriker: boolean;
-  monthChampion: boolean;
+  monthLVP?: boolean;
+  monthTopPointer?: boolean;
+  monthStriker?: boolean;
+  monthChampion?: boolean;
 }
 
 export interface PlayerGoals {

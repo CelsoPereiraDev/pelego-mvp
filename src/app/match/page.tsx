@@ -31,6 +31,10 @@ export type CreateMatch = {
         ownGoalPlayerId?: string;
       }[];
     };
+    homeAssists: {
+        assists: number;
+        playerId: string;  
+      }[];
     awayGoals: {
       goalsCount: string;
       whoScores: {
@@ -39,6 +43,10 @@ export type CreateMatch = {
         ownGoalPlayerId?: string;
       }[];
     };
+    awayAssists: {
+        assists: number;
+        playerId: string;
+      }[];
     awayTeamId: string;
   }[];
 };

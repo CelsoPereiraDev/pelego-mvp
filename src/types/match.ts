@@ -1,5 +1,17 @@
 import { PlayerResponse } from "@/types/player";
 
+export interface AssistDetails {
+  playerId: string;
+  assists: number;
+}
+export interface AssistResponse {
+  id: string;
+  matchId: string;
+  playerId: string;
+  player: PlayerResponse;
+  assists: number;
+}
+
 export interface MatchResponse {
   id: string;
   date: string;
@@ -7,6 +19,7 @@ export interface MatchResponse {
   awayTeamId: string;
   result?: MatchResultResponse;
   goals: GoalResponse[];
+  assists: AssistResponse[];
 }
 
 export interface CreateMatchDataRequested {
@@ -15,6 +28,8 @@ export interface CreateMatchDataRequested {
   awayTeamId: string;
   homeGoals: GoalDetails[];
   awayGoals: GoalDetails[];
+  homeAssists: AssistDetails[];
+  awayAssists: AssistDetails[];
 }
 
 export interface GoalDetails {
@@ -49,6 +64,8 @@ export interface MatchResultResponse {
 
 export interface GoalResponse {
   id: string;
+  ownGoalPlayerId?: string;
+  ownGoalPlayer?: PlayerResponse;
   matchId: string;
   playerId: string;
   match: MatchResponse;
@@ -68,15 +85,25 @@ export type CreateMatch = {
       whoScores: {
         goals: number;
         playerId: string;
+        ownGoalPlayerId?: string;
       }[];
     };
+    homeAssists: {
+        assists: number;
+        playerId: string;  
+      }[];
     awayGoals: {
       goalsCount: string;
       whoScores: {
         goals: number;
         playerId: string;
+        ownGoalPlayerId?: string;
       }[];
     };
+    awayAssists: {
+        assists: number;
+        playerId: string;
+      }[];
     awayTeamId: string;
   }[];
 };
