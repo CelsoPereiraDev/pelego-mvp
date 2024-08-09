@@ -9,7 +9,8 @@ import React, { useEffect, useState } from 'react';
 const AssistLeaderPage: React.FC = () => {
   const params = useParams();
   const year = params.year as string;
-  const { weeks, isLoading, isError } = useWeeksByDate(year);
+  const month = params.month as string | undefined;
+  const { weeks, isLoading, isError } = useWeeksByDate(year, month);
 
   const [assistStats, setAssistStats] = useState<SimpleAssistStats[]>([]);
 
@@ -28,9 +29,17 @@ const AssistLeaderPage: React.FC = () => {
     return <div>Error loading data</div>;
   }
 
- return (
+  function mapMonthNumberToText(monthNumber:number) {
+  const months = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ];
+  return months[monthNumber - 1];
+}
+
+  return (
    <div className="h-screen bg-[#212121] w-screen flex justify-start flex-col p-12 items-center gap-7">
-      <h1 className="text-3xl text-center mb-9 text-white">{`Líderes de  Assistências de ${year}`}</h1>
+      <h1 className="text-3xl text-center mb-9 text-white">Líderes de  Assistências de {month ? `${mapMonthNumberToText(Number(month))}` : `Ano ${year}`}</h1>
       <table className="min-w-[800px] p-6 bg-white h-full rounded-lg overflow-auto text-black flex flex-col gap-4">
         <thead>
           <tr>
