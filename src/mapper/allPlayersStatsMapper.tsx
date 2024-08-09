@@ -50,7 +50,7 @@ type NumericPlayerStatsKeys = Exclude<keyof PlayerStats,
 type PlayerStatsMap = { [playerId: string]: PlayerStats };
 
 const ASCENDING_ORDER_ASPECTS: NumericPlayerStatsKeys[] = [
-  'losses', 'goalsConceded', 'averagePointsPerMatch', 'totalGoalsConcededPerWeek', 'averageGoalsConcededPerWeek'
+  'losses', 'goalsConceded', 'averagePointsPerMatch', 'totalGoalsConcededPerWeek', 'averageGoalsConcededPerWeek', 'averageGoalsConceded'
 ];
 
 const NUMERIC_ASPECTS: NumericPlayerStatsKeys[] = [
@@ -154,11 +154,13 @@ const updatePlayerInteractionStats = (
   });
 };
 
-const calculateRankings = (playerStatsMap: PlayerStatsMap) => {
-  const statsList = Object.values(playerStatsMap);
+const calculateRankings = (playerStatsMap: PlayerStatsMap, numberOfWeeks: number) => {
+  const minWeeksRequired = numberOfWeeks * 0.2501;
+
+  const filteredStatsList = Object.values(playerStatsMap).filter(playerStats => playerStats.totalWeeks.size >= minWeeksRequired);
 
   NUMERIC_ASPECTS.forEach(aspect => {
-    statsList.sort((a, b) => {
+    filteredStatsList.sort((a, b) => {
       const aValue = a[aspect] ?? 0;
       const bValue = b[aspect] ?? 0;
       if (ASCENDING_ORDER_ASPECTS.includes(aspect)) {
@@ -169,11 +171,11 @@ const calculateRankings = (playerStatsMap: PlayerStatsMap) => {
 
     let currentRank = 1;
 
-    statsList.forEach((playerStats, index) => {
+    filteredStatsList.forEach((playerStats, index) => {
       if (!playerStats.rankings) playerStats.rankings = {};
 
       if (index > 0) {
-        const previousPlayerStats = statsList[index - 1];
+        const previousPlayerStats = filteredStatsList[index - 1];
         const previousValue = previousPlayerStats[aspect] ?? 0;
         const currentValue = playerStats[aspect] ?? 0;
 
@@ -189,6 +191,7 @@ const calculateRankings = (playerStatsMap: PlayerStatsMap) => {
     });
   });
 };
+
 
 const processGoalsAndAssists = (
   match: any,
@@ -267,7 +270,7 @@ const calculatePlayersStats = (weeks: WeekResponse[]): PlayerStatsMap => {
   });
 
   calculateAverageStats(playerStatsMap);
-  calculateRankings(playerStatsMap);
+  calculateRankings(playerStatsMap, weeks?.length);
 
   return playerStatsMap;
 };
