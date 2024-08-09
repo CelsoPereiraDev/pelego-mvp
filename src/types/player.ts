@@ -32,6 +32,7 @@ export interface Player {
   monthTopPointer?: boolean;
   monthStriker?: boolean;
   monthChampion?: boolean;
+  monthBestDefender?: boolean;
 }
 
 export interface PlayerGoals {
