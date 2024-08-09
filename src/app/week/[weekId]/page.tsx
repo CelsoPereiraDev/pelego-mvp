@@ -56,7 +56,6 @@ const WeekDetails: React.FC = () => {
   });
 
   const uniqueMatches: MatchResponse[] = [];
-  console.log("🆑 ~ uniqueMatches:", uniqueMatches)
   const matchIds = new Set();
 
   week?.teams.flatMap((team) => team.matchesHome.concat(team.matchesAway)).forEach((match) => {
