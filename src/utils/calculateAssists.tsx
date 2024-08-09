@@ -8,13 +8,12 @@ export interface SimpleAssistStats {
 
 export const calculateSimpleAssistStats = (weeks: WeekResponse[]): SimpleAssistStats[] => {
   const assistStatsMap: { [playerId: string]: SimpleAssistStats } = {};
+  const processedMatches = new Set<string>(); // Manter o conjunto de partidas processadas fora do loop
 
   weeks?.forEach((week) => {
     week.teams?.flatMap((team) => team.matchesHome?.concat(team.matchesAway) ?? []).forEach((match) => {
-      const processedMatches = new Set<string>();
-      
       if (!processedMatches.has(match.id)) {
-        processedMatches.add(match.id);
+        processedMatches.add(match.id); // Adicionar a partida ao conjunto de processadas
 
         const allPlayers = new Set<PlayerResponse>();
         match.assists?.forEach(assist => {
@@ -39,6 +38,6 @@ export const calculateSimpleAssistStats = (weeks: WeekResponse[]): SimpleAssistS
     });
   });
 
-  // Convert to array and return
+  // Convert to array and return sorted by assists in descending order
   return Object.values(assistStatsMap).sort((a, b) => b.assists - a.assists);
 };
