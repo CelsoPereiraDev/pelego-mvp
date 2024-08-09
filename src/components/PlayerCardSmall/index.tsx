@@ -2,9 +2,10 @@
 
 import { Player } from "@/types/player";
 import BatteryAlertIcon from '@mui/icons-material/BatteryAlert';
+import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 import Image from "next/image";
 import Flag from "react-world-flags";
-import { monthWinner, NH, StrikerMVP, StrikerNormal, StrikerWeek } from "../../utils/images";
+import { monthWinner, NH, StrikerMonth, StrikerMVP, StrikerNormal, StrikerWeek } from "../../utils/images";
 
 interface PlayerCardSmallProps {
     playerData: Player;
@@ -84,7 +85,7 @@ const MonthChampionCard: React.FC<{ playerData: Player, showOverall: boolean }> 
 );
 
 const MostPointerCard: React.FC<{ playerData: Player, showOverall: boolean }> = ({ playerData, showOverall }) => (
-    <div className={"bg-[url('../../public/MPIM.png')] h-[169px] w-[149px] bg-contain bg-center bg-no-repeat"}>
+    <div className={"bg-[url('../../public/MPIM1.png')] h-[169px] w-[149px] bg-contain bg-center bg-no-repeat"}>
         <div className="pl-3 py-7">
             <div className="flex flex-row h-[90px]">
                 <div className="flex flex-col items-center">
@@ -167,9 +168,51 @@ const StrikerCard: React.FC<{ playerData: Player, showOverall: boolean }> = ({ p
                 {playerData.name.toUpperCase()}
             </div>
             <div className="flex flex-row justify-center pr-3 gap-[2px]">
-                {playerData.monthTopPointer &&
-                    <Image src={monthWinner} alt="team logo" width={18} height={18} className="relative bottom-[9px] pt-[2px]"/>
-                }
+                <Image src={StrikerMonth} alt="team logo" width={18} height={18} className="relative bottom-[9px] pt-[2px]"/>
+            </div>
+        </div>
+    </div>
+);
+
+const DefenderCard: React.FC<{ playerData: Player, showOverall: boolean }> = ({ playerData, showOverall }) => (
+    <div className={"bg-[url('../../public/defender.png')] h-[169px] w-[149px] bg-contain bg-center bg-no-repeat"}>
+        <div className="pl-3 py-7">
+            <div className="flex flex-row h-[90px]">
+                <div className="flex flex-col items-center">
+                    <div className="flex flex-col justify-center w-min items-center mt-[12px] ml-[6px]">
+                        <div className="text-2xl leading-[10px] min-h-[10px] text-[#adbeb7]">
+                            {showOverall ? playerData.overall.overall : ''}
+                        </div>
+                        <span className="text-sm text-center w-min leading-2 pt-1 text-[#adbeb7] drop-shadow-sm">
+                            {playerData.position.toUpperCase()}
+                        </span>
+                    </div>
+                    <div>
+                        <div className="pl-[6px]">
+                            {playerData.country ? (
+                                <Flag code={playerData.country} alt="flag" width={26} height={9}/>
+                            ) : (
+                                <Flag code="BR" alt="flag" width={26} height={9}/>
+                            )}
+                        </div>
+                        {playerData.team === 'NH' && (
+                            <div className="pt-[3px] pl-[6px]">
+                                <Image src={NH} alt="team logo" width={24} height={24} />
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className="h-full pb-[1px]">
+                    {playerData.image && (
+                        <Image className="h-full w-full" src={playerData.image} alt="player image" width={160} height={160} />
+                    )}
+                </div>
+            </div>
+            <div className="text-center pt-[10px] pr-3 text-sm text-[#adbeb7] drop-shadow-sm">
+                {playerData.name.toUpperCase()}
+            </div>
+            <div className="flex flex-row justify-center pr-3 gap-[2px]">
+                <LocalPoliceIcon className="max-h-[15px] max-w-[15px] relative  bottom-[4px] text-[#adbeb7]" />
             </div>
         </div>
     </div>
@@ -324,6 +367,8 @@ const PlayerCardSmall: React.FC<PlayerCardSmallProps> = ({ playerData, showOvera
             return <MostPointerCard playerData={playerData} showOverall={showOverall} />
         } else if (playerData.monthStriker) {
             return <StrikerCard playerData={playerData} showOverall={showOverall} />
+        } else if (playerData.monthBestDefender) { 
+            return <DefenderCard playerData={playerData} showOverall={showOverall} />
         } else if (playerData.isChampion) {
             return <WeekChampionCard playerData={playerData} showOverall={showOverall} />;
         } else {
