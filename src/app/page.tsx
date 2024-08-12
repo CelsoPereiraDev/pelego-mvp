@@ -1,10 +1,15 @@
 'use client'
 
 import Field from "@/components/Field";
+import SelectWithSearch from "@/components/SelectWithSearch";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { usePlayers } from "@/services/player/usePlayers";
 import { Player } from "@/types/player";
 import { Team } from "@/types/team";
 import { calculateTeamOverall, hillClimbing } from "@/utils/createTeam";
+import AutoModeIcon from '@mui/icons-material/AutoMode';
 import MultipleStopIcon from '@mui/icons-material/MultipleStop';
 import { useState } from "react";
 import Select from 'react-select';
@@ -81,12 +86,13 @@ export default function Home() {
 
   return (
     <>
-      <div className="min-h-screen h-full bg-[#212121] p-12">
+      <div className="min-h-screen h-full bg-[#09090B] p-12">
         <p className="text-3xl text-center mb-9 text-white">Gerador de equipes</p>
         <div className="flex flex-col gap-12 text-black">
           <div className="flex flex-col items-center space-y-4">
-          <Select
+          <SelectWithSearch
             isMulti
+            placeholder='Jogadores'
             options={availablePlayers?.map(player => ({ label: player.name, value: player }))}
             value={selectedPlayers.map(player => ({ label: player.name, value: player }))}
             onChange={(selectedOptions) => setSelectedPlayers(selectedOptions.map((option: {
@@ -96,19 +102,23 @@ export default function Home() {
           />
             <span className="text-white">Jogadores selecionados: {selectedPlayers.length}</span>
             <div>
-              <input type="checkbox" id="showOverall" name="ShowOverall" checked={showOverall} onChange={() => setShowOverall(!showOverall)} />
-              <label className="text-xl text-center text-white ml-2" htmlFor="ShowOverall">Mostrar Overall</label>
-              <Select
-                options={quantityTeamsData}
-                value={quantityTeamsData.find(option => option.value === quantityTeams) || null}
-                onChange={(selectedOption) => setQuantityTeams(selectedOption?.value || null)}
-              />
+              <div className="flex flex-row gap-2 items-center m-2">
+                <Checkbox id="terms" onCheckedChange={() => setShowOverall(!showOverall)} defaultChecked />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white mt-1"
+                  >
+                    Mostrar Overall
+                  </label>
+              </div>
+                <SelectWithSearch
+                  placeholder="Qtd de times"
+                  options={quantityTeamsData}
+                  value={quantityTeamsData.find(option => option.value === quantityTeams) || null}
+                  onChange={(selectedOption) => setQuantityTeams(selectedOption?.value || null)}
+                />
             </div>
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded"
-              onClick={handleGenerateTeams}>
-              Gerar Times
-            </button>
+            <Button variant={"default"} onClick={handleGenerateTeams}> <AutoModeIcon className="mr-2 h-4 w-4"/>Gerar Times</Button>
             {teams.length !== 0 && (
               <>
                 <div className="flex flex-row gap-4 items-center">
@@ -127,26 +137,29 @@ export default function Home() {
                 />
 
                 </div>
-                <button
-                  className="px-4 py-2 bg-blue-500 text-white rounded"
-                  onClick={handleTradePlayersBetweenTeams}>
-                  Trocar Jogadores
-                </button>
+                <Button variant={"default"} onClick={handleTradePlayersBetweenTeams}>Trocar Jogadores</Button>
               </>
             )}
           </div>
-          <div className="flex flex-row items-center space-x-2 w-full justify-around max-w-[1900px] self-center flex-wrap">
-            {teams.map((team, index) => (
-              <div key={index} className="p-2 pb-8 my-2 bg-white text-black w-fit rounded-lg min-w-[360px]">
-                <div className="flex flex-row justify-center w-full gap-8">
-                  <p className="mb-2 text-center">Time {index + 1}</p>
-                  <p className="mb-2 text-center">Overall: {calculateTeamOverall(team.players)}</p>
-                </div>
-                <Field team={team} showOverall={showOverall} />
-              </div>
-            ))}
-          </div>
+           <div className="flex flex-row items-center space-x-2 w-full justify-around self-center flex-wrap">
+          {teams.map((team, index) => (
+          <Card  key={index}>
+          <CardHeader>
+            <CardTitle>Time {index + 1}</CardTitle>
+            <CardDescription>Overall: {calculateTeamOverall(team.players)}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Field team={team} showOverall={showOverall} />
+          </CardContent>
+          
+        </Card>
+        ))}
         </div>
+         
+            
+              
+        </div>
+        
       </div>
     </>
   );
