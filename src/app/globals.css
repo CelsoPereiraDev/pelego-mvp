@@ -2,20 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom properties for dark theme */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+
+  --background: 224 71.4% 4.1%; /* Fundo principal */
+  --foreground: 210 20% 98%; /* Texto principal */
+  --card: 224 71.4% 4.1%; /* Fundo do card */
+  --card-foreground: 210 20% 98%; /* Texto no card */
+  --popover: 224 71.4% 4.1%; /* Fundo do popover */
+  --popover-foreground: 210 20% 98%; /* Texto no popover */
+  --primary: 263.4 70% 50.4%; /* Cor primária */
+  --primary-foreground: 210 20% 98%; /* Texto na cor primária */
+  --secondary: 215 27.9% 16.9%; /* Cor secundária */
+  --secondary-foreground: 210 20% 98%; /* Texto na cor secundária */
+  --muted: 215 27.9% 16.9%; /* Fundo neutro */
+  --muted-foreground: 217.9 10.6% 64.9%; /* Texto neutro */
+  --accent: 215 27.9% 16.9%; /* Cor de destaque */
+  --accent-foreground: 210 20% 98%; /* Texto na cor de destaque */
+  --destructive: 0 62.8% 30.6%; /* Cor destrutiva */
+  --destructive-foreground: 210 20% 98%; /* Texto na cor destrutiva */
+  --border: 215 27.9% 16.9%; /* Cor das bordas */
+  --input: 215 27.9% 16.9%; /* Fundo do input */
+  --ring: 263.4 70% 50.4%; /* Cor do anel de foco */
+  --chart-1: 220 70% 50%; /* Cor de gráfico 1 */
+  --chart-2: 160 60% 45%; /* Cor de gráfico 2 */
+  --chart-3: 30 80% 55%; /* Cor de gráfico 3 */
+  --chart-4: 280 65% 60%; /* Cor de gráfico 4 */
+  --chart-5: 340 75% 55%; /* Cor de gráfico 5 */
+  --placeholder: 216 10% 65%; /* Cor do placeholder */
+  --light-hover: 262.1 83.3% 65%; /* Hover roxo claro */
+  --text-light-gray: 210 20% 98%; /* Texto cinza claro */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
+/* Body styling */
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -26,6 +48,7 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+/* Tailwind custom utility */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
