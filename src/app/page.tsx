@@ -151,7 +151,6 @@ export default function Home() {
           <CardContent>
             <Field team={team} showOverall={showOverall} />
           </CardContent>
-          
         </Card>
         ))}
         </div>
