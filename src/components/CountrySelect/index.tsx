@@ -1,7 +1,8 @@
 
-import Select, { SingleValue } from 'react-select';
+import { SingleValue } from 'react-select';
 import Flag from 'react-world-flags';
 import countryOptions from '../../utils/countryOptions';
+import SelectWithSearch from '../SelectWithSearch';
 
 export interface FormValues {
   country: string;
@@ -36,7 +37,7 @@ const customOption = (props: any) => {
 };
 
 const CountrySelect: React.FC<CountrySelectProps> = (props) => (
-  <Select
+  <SelectWithSearch
     options={countryOptions}
     components={{ SingleValue: customSingleValue, Option: customOption }}
     {...props}

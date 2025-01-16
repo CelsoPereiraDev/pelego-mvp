@@ -8,16 +8,18 @@ export interface SimplePlayerStats {
   draws: number;
   losses: number;
   pointsPercentage: number;
+  weeksParticipated: number;
 }
 
-
-
 export const calculateSimplePlayerStats = (weeks: WeekResponse[]): SimplePlayerStats[] => {
-  const playerStatsMap: { [playerId: string]: SimplePlayerStats & { matches: number } } = {};
+  const playerStatsMap: { [playerId: string]: SimplePlayerStats & { matches: number, weeksPlayedIn: Set<string> } } = {};
 
   const processedMatches = new Set<string>();
 
   weeks?.forEach((week) => {
+    const weekId = week.id;
+    const playersInThisWeek = new Set<string>();
+
     week.teams?.flatMap((team) => team.matchesHome?.concat(team.matchesAway) ?? []).forEach((match) => {
       if (!processedMatches.has(match.id)) {
         processedMatches.add(match.id);
@@ -46,9 +48,12 @@ export const calculateSimplePlayerStats = (weeks: WeekResponse[]): SimplePlayerS
               draws: 0,
               losses: 0,
               matches: 0,
-              pointsPercentage: 0
+              weeksParticipated: 0,
+              pointsPercentage: 0,
+              weeksPlayedIn: new Set<string>()
             };
           }
+          playersInThisWeek.add(player.id);
         });
 
         homeTeam?.players?.forEach(member => {
@@ -80,26 +85,26 @@ export const calculateSimplePlayerStats = (weeks: WeekResponse[]): SimplePlayerS
         });
       }
     });
+
+    playersInThisWeek.forEach(playerId => {
+      playerStatsMap[playerId].weeksPlayedIn.add(weekId);
+    });
   });
 
-  // Calculate points percentage
   Object.values(playerStatsMap).forEach(playerStats => {
     if (playerStats.matches > 0) {
       playerStats.pointsPercentage = parseFloat(((playerStats.points / (playerStats.matches * 3)) * 100).toFixed(2));
     }
+    playerStats.weeksParticipated = playerStats.weeksPlayedIn.size;
   });
 
-  // Convert to array and return
-  return Object.values(playerStatsMap).map(({ name, points, wins, draws, losses, pointsPercentage }) => ({
+  return Object.values(playerStatsMap).map(({ name, points, wins, draws, losses, pointsPercentage, weeksParticipated }) => ({
     name,
     points,
     wins,
     draws,
     losses,
-    pointsPercentage
+    pointsPercentage,
+    weeksParticipated
   }));
 };
-
-
-
-

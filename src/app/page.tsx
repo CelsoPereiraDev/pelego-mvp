@@ -17,6 +17,7 @@ import Select from 'react-select';
 export default function Home() {
   const { players } = usePlayers()
   const [teams, setTeams] = useState<Team[]>([]);
+  console.log("🆑 ~ Home ~ teams:", teams)
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
   const [quantityTeams, setQuantityTeams] = useState<number | null>(null);
   const [showOverall, setShowOverall] = useState(true);
@@ -154,9 +155,7 @@ export default function Home() {
         </Card>
         ))}
         </div>
-         
-            
-              
+    
         </div>
         
       </div>

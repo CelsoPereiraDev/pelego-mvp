@@ -1,14 +1,17 @@
+
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import localFont from 'next/font/local';
+import localFont from "next/font/local";
 import "./globals.css";
+import MainMenu from "@/components/MainMenu";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const otherFontFamily = localFont({
-  src: '../../public/sans.woff',
-  display: 'swap',
-  variable: '--font-main',
+  src: "../../public/sans.woff",
+  display: "swap",
+  variable: "--font-main",
 });
 
 export const metadata: Metadata = {
@@ -22,8 +25,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={` ${otherFontFamily.variable} dark:bg-[hsl(var(--background))] bg-[hsl(var(--background-end-rgb))]`}>
-      <body className="text-[hsl(var(--foreground))]">{children}</body>
+    <html
+      lang="pt-BR"
+      className={`${otherFontFamily.variable} dark:bg-[hsl(var(--background))] bg-[hsl(var(--background-end-rgb))]`}
+    >
+      <body className="text-[hsl(var(--foreground))] max-w-screen">
+        <div className="flex flex-row">
+          <MainMenu />
+          <main className="min-w-full">
+            {children}
+          </main>
+        </div>
+      </body>
     </html>
   );
 }

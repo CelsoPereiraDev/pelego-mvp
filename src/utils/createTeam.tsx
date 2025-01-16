@@ -84,8 +84,9 @@ export function distributePlayers(data: Player[], quantityOfTeams: number): Team
         throw new Error("Não há jogadores suficientes para distribuir entre as equipes.");
     }
 
-    // Calcular o número de jogadores por equipe
+    // Calcular o número básico de jogadores por equipe e o número de jogadores restantes
     const playersPerTeam = Math.floor(data.length / quantityOfTeams);
+    const remainingPlayers = data.length % quantityOfTeams;
 
     // Inicializar os times
     const teams: Player[][] = new Array(quantityOfTeams).fill([]).map(() => []);
@@ -100,12 +101,9 @@ export function distributePlayers(data: Player[], quantityOfTeams: number): Team
 
     // Distribuir os jogadores restantes
     for (let i = 0; i < playersPerTeam - 1; i++) {
-        // Para cada posição restante em cada equipe
         for (let j = 0; j < quantityOfTeams; j++) {
-            // Calcular a média do overall dos jogadores na equipe
             const teamOverall = calculateTeamOverall(teams[j]);
 
-            // Encontrar o jogador com a menor diferença em relação à média do overall da equipe
             let bestFitIndex = -1;
             let smallestDifference = Infinity;
             for (let k = 0; k < sortedPlayers.length; k++) {
@@ -116,9 +114,25 @@ export function distributePlayers(data: Player[], quantityOfTeams: number): Team
                 }
             }
 
-            // Adicionar o jogador à equipe
             teams[j].push(sortedPlayers.splice(bestFitIndex, 1)[0]);
         }
+    }
+
+    // Distribuir os jogadores "sobrantes"
+    for (let i = 0; i < remainingPlayers; i++) {
+        const teamOverall = calculateTeamOverall(teams[i]);
+
+        let bestFitIndex = -1;
+        let smallestDifference = Infinity;
+        for (let k = 0; k < sortedPlayers.length; k++) {
+            const difference = Math.abs(sortedPlayers[k].overall.overall - teamOverall);
+            if (difference < smallestDifference && !teams.flat().includes(sortedPlayers[k])) {
+                bestFitIndex = k;
+                smallestDifference = difference;
+            }
+        }
+
+        teams[i].push(sortedPlayers.splice(bestFitIndex, 1)[0]);
     }
 
     // Calcular a pontuação total de cada time e retornar os times com seus overalls
@@ -128,3 +142,4 @@ export function distributePlayers(data: Player[], quantityOfTeams: number): Team
         overall: calculateTeamOverall(team)
     }));
 }
+

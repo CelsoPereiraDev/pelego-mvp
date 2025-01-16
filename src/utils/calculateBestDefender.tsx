@@ -3,6 +3,7 @@ import { WeekResponse } from "@/types/weeks";
 
 interface PlayerStatsSummary {
   playerName: string;
+  position: string;
   weeksPlayed: number;
   goalsConceded: number;
   matches: number;
@@ -14,6 +15,7 @@ type PlayerStatsSummaryMap = { [playerName: string]: PlayerStatsSummary };
 
 const initializePlayerStatsSummary = (player: PlayerResponse): PlayerStatsSummary => ({
   playerName: player.name,
+  position: player.position,
   weeksPlayed: 0,
   goalsConceded: 0,
   matches: 0,
@@ -35,7 +37,7 @@ const calculateAverageStatsSummary = (playerStatsMap: PlayerStatsSummaryMap) => 
       playerStats.averageGoalsConceded = parseFloat((playerStats.goalsConceded / playerStats.matches).toFixed(2));
     }
     if (playerStats.weeksPlayed > 0) {
-      playerStats.averageGoalsConcededPerWeek = parseFloat(( playerStats.weeksPlayed/playerStats.goalsConceded).toFixed(2));
+      playerStats.averageGoalsConcededPerWeek = parseFloat(( playerStats.goalsConceded / playerStats.weeksPlayed).toFixed(2));
     }
   });
 };
@@ -45,7 +47,7 @@ const calculatePlayersStatsSummary = (weeks: WeekResponse[]): PlayerStatsSummary
   const processedMatches = new Set<string>();
 
   weeks?.forEach((week) => {
-  const playersInWeek = new Set<string>();
+    const playersInWeek = new Set<string>();
     week.teams?.flatMap((team) => team.matchesHome?.concat(team.matchesAway) ?? []).forEach((match) => {
       if (!processedMatches.has(match.id)) {
         processedMatches.add(match.id);

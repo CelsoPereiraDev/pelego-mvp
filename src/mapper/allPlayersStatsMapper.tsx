@@ -40,6 +40,7 @@ interface PlayerStats {
   top5PointsGivenByPlayers: Array<{ name: string; points: number; pointsExpected: number }>;
   top5WorstPerformingTeammates: Array<{ name: string; points: number; pointsExpected: number }>;
   rankings?: Partial<Record<NumericPlayerStatsKeys, number>>;
+  teamGoals: number;
 }
 
 type NumericPlayerStatsKeys = Exclude<keyof PlayerStats, 
@@ -93,6 +94,7 @@ const initializePlayerStats = (player: PlayerResponse): PlayerStats => ({
   top5PointsAgainstPlayers: [],
   top5PointsGivenByPlayers: [],
   top5WorstPerformingTeammates: [],
+  teamGoals: 0,
 });
 
 const updatePlayerStats = (
@@ -235,6 +237,22 @@ const calculatePlayersStats = (weeks: WeekResponse[]): PlayerStatsMap => {
         const homeTeam = week.teams?.find(team => team.id === match.homeTeamId);
         const awayTeam = week.teams?.find(team => team.id === match.awayTeamId);
 
+        homeTeam?.players?.forEach(member => {
+          const playerId = member.player.id;
+          if (!playerStatsMap[playerId]) {
+            playerStatsMap[playerId] = initializePlayerStats(member.player);
+          }
+          playerStatsMap[playerId].teamGoals += match.result?.homeGoals ?? 0;
+        });
+
+        awayTeam?.players?.forEach(member => {
+          const playerId = member.player.id;
+          if (!playerStatsMap[playerId]) {
+            playerStatsMap[playerId] = initializePlayerStats(member.player);
+          }
+          playerStatsMap[playerId].teamGoals += match.result?.awayGoals ?? 0;
+        });
+
         const allPlayers = new Set<PlayerResponse>();
         homeTeam?.players?.forEach(member => allPlayers.add(member.player));
         awayTeam?.players?.forEach(member => allPlayers.add(member.player));
@@ -266,7 +284,7 @@ const calculatePlayersStats = (weeks: WeekResponse[]): PlayerStatsMap => {
 
         processGoalsAndAssists(match, playerStatsMap);
       }
-    });
+    });calculateAverageStats
   });
 
   calculateAverageStats(playerStatsMap);
@@ -290,24 +308,41 @@ const calculateAverageStats = (playerStatsMap: PlayerStatsMap) => {
       playerStats.averageGoalsConcededPerWeek = parseFloat((playerStats.totalGoalsConcededPerWeek / totalWeeks).toFixed(2));
     }
 
-    playerStats.playWith = Object.entries(playerStats.pointsWithPlayers).map(([name, data]) => ({
-      name,
-      points: data.points,
-      pointsExpected: data.matches * 3,
-    }));
+    playerStats.playWith = Object.entries(playerStats.pointsWithPlayers)
+      .map(([name, data]) => ({
+        name,
+        points: data.points,
+        pointsExpected: data.matches * 3,
+      }))
+      .filter(data => data.pointsExpected >= 39); // Jogaram pelo menos 2 vezes juntos
 
-    playerStats.playAgainst = Object.entries(playerStats.pointsAgainstPlayers).map(([name, data]) => ({
-      name,
-      points: data.points,
-      pointsExpected: data.matches * 3,
-    }));
+    playerStats.playAgainst = Object.entries(playerStats.pointsAgainstPlayers)
+      .map(([name, data]) => ({
+        name,
+        points: data.points,
+        pointsExpected: data.matches * 3,
+      }))
+      .filter(data => data.pointsExpected >= 39); // Jogaram pelo menos 2 vezes juntos
 
-    playerStats.top5PointsWithPlayers = playerStats.playWith.sort((a, b) => (b.points / b.pointsExpected) - (a.points / a.pointsExpected)).slice(0, 5);
-    playerStats.top5PointsAgainstPlayers = playerStats.playAgainst.sort((a, b) => (a.points / a.pointsExpected) - (b.points / b.pointsExpected)).slice(0, 5);
-    playerStats.top5PointsGivenByPlayers = playerStats.playAgainst.sort((a, b) => (b.points / b.pointsExpected) - (a.points / a.pointsExpected)).slice(0, 5);
-    playerStats.top5WorstPerformingTeammates = playerStats.playWith.sort((a, b) => (a.points / a.pointsExpected) - (b.points / b.pointsExpected)).slice(0, 5);
+    playerStats.top5PointsWithPlayers = playerStats.playWith
+      .sort((a, b) => (b.points / b.pointsExpected) - (a.points / a.pointsExpected))
+      .slice(0, 5);
+      
+
+    playerStats.top5PointsAgainstPlayers = playerStats.playAgainst
+      .sort((a, b) => (a.points / a.pointsExpected) - (b.points / b.pointsExpected))
+      .slice(0, 5);
+
+    playerStats.top5PointsGivenByPlayers = playerStats.playAgainst
+      .sort((a, b) => (b.points / b.pointsExpected) - (a.points / a.pointsExpected))
+      .slice(0, 5);
+
+    playerStats.top5WorstPerformingTeammates = playerStats.playWith
+      .sort((a, b) => (a.points / a.pointsExpected) - (b.points / b.pointsExpected))
+      .slice(0, 5);
   });
 };
+
 
 export const calculatePlayerStatsForPlayer = (weeks: WeekResponse[], playerId: string): PlayerStats | null => {
   const playerStatsMap = calculatePlayersStats(weeks);

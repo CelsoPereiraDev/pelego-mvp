@@ -66,7 +66,7 @@ const WeeksList: React.FC = () => {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--background))] w-screen flex justify-start flex-col p-12 items-center gap-7">
+    <div className="min-h-screen bg-[hsl(var(--background))] w-full flex justify-start flex-col p-12 items-center gap-7">
       <h1 className="text-3xl text-center mb-9 text-[hsl(var(--foreground))]">Semanas</h1>
       <Card className="p-6 min-h-full rounded-lg overflow-auto min-w-[80%]">
         <div className="mb-8 w-full flex justify-end">

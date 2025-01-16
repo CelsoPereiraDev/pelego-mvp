@@ -1,7 +1,8 @@
 'use client'
 
-import PlayerCard from "@/components/PlayerCard";
+import { PlayerCard } from "@/components/PlayerCard";
 import { RadarGraphic } from "@/components/RadarGrahic";
+import { RadialChart } from "@/components/RadialChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { calculatePlayerStatsForPlayer } from "@/mapper/allPlayersStatsMapper";
 import { usePlayer } from "@/services/player/usePlayer";
@@ -29,14 +30,29 @@ export default function PlayerPage({ params: { playerSlug } }: PlayerProps) {
     { stat: "Defesa", valor: player?.overall.defense || 0 },
     { stat: "Físico", valor: player?.overall.physics || 0 },
   ];
-  console.log("🆑 ~ PlayerPage ~ chartData:", chartData)
 
   const chartConfig = {
   desktop: {
     label: "Estatisticas do jogador",
     color: "hsl(270, 100%, 50%)",
   },
-};
+  };
+
+  const radialChartData =[{ goals: "PPG", 
+    APG: ((playerStats?.goals || 0) + (playerStats?.assists || 0)),
+    PIG: (playerStats?.teamGoals || 0) - ((playerStats?.goals || 0) + (playerStats?.assists || 0)) || 0 }]
+    console.log("🆑 ~ PlayerPage ~ PIG:", radialChartData[0].PIG)
+
+  const radialChartConfig = {
+    APG: {
+      label: "Part. direta nos gols  ",
+      color: "hsl(270, 100%, 50%)",
+    },
+    PIG: {
+      label: "Demais gols do time  ",
+      color: "hsl(262.1 83.3% 65%)",
+    },
+    };
 
   const renderMainStats = (stats: typeof playerStats) => {
     if (!stats) return null;
@@ -136,7 +152,7 @@ export default function PlayerPage({ params: { playerSlug } }: PlayerProps) {
   );
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--background))] min-w-screen flex justify-start flex-col p-12 items-center gap-7">
+    <div className="min-h-screen bg-[hsl(var(--background))] max-w-screen flex justify-start flex-col p-12 items-center gap-4">
       <h1 className="text-3xl text-center mb-9 text-[hsl(var(--foreground))]">{player?.name}</h1>
       <Card className="max-w-[1440px] p-6 h-full rounded-lg w-full flex flex-col gap-12">
         <div className="flex flex-row gap-24">
@@ -148,6 +164,12 @@ export default function PlayerPage({ params: { playerSlug } }: PlayerProps) {
               description="Análise dos principais atributos do jogador"
               chartData={chartData}
               chartConfig={chartConfig}
+              maxDomain={100}
+            />
+            <RadialChart 
+              valueInPercentage={ `${(((playerStats?.goals || 0) + (playerStats?.assists || 0))/(playerStats?.teamGoals || 1)* 100).toFixed(2)}  %`}
+              chartData={radialChartData}
+              chartConfig={radialChartConfig}
             />
           </CardContent>
         </div>

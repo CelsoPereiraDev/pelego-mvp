@@ -14,6 +14,13 @@ type TeamIdToIndexMap = {
   [key: string]: number;
 };
 
+type PlayerAssistsMap = {
+  [key: string]: {
+    name: string;
+    assists: number;
+  };
+};
+
 type PlayerGoalsMap = {
   [key: string]: {
     name: string;
@@ -38,6 +45,7 @@ type TeamPointsMap = {
 const WeekDetails: React.FC = () => {
   const { weekId } = useParams();
   const { week, isLoading, isError } = useWeek(weekId as string);
+  console.log("🆑 ~ week:", week)
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {isError.message}</div>;
@@ -59,18 +67,31 @@ const WeekDetails: React.FC = () => {
 
   const playerGoalsMap: PlayerGoalsMap = {};
   const ownGoalsMap: OwnGoalsMap = {};
+  const playerAssistsMap: PlayerAssistsMap = {};
   uniqueMatches.forEach((match) => {
     match.goals.forEach((goal) => {
       if (goal.player) {
+        // Lógica para gols
         if (!playerGoalsMap[goal.player.id]) {
           playerGoalsMap[goal.player.id] = { name: goal.player.name, goals: 0 };
         }
         playerGoalsMap[goal.player.id].goals += goal.goals;
       } else if (goal.ownGoalPlayer) {
+        // Lógica para gols contra
         if (!ownGoalsMap[goal.ownGoalPlayer.id]) {
           ownGoalsMap[goal.ownGoalPlayer.id] = { name: goal.ownGoalPlayer.name, ownGoals: 0 };
         }
         ownGoalsMap[goal.ownGoalPlayer.id].ownGoals += goal.goals;
+      }
+    });
+
+    match.assists.forEach((assist) => {
+      if (assist.player) {
+        // Lógica para assistências
+        if (!playerAssistsMap[assist.player.id]) {
+          playerAssistsMap[assist.player.id] = { name: assist.player.name, assists: 0 };
+        }
+        playerAssistsMap[assist.player.id].assists += 1; // Incrementa o número de assistências
       }
     });
   });
@@ -96,6 +117,7 @@ const WeekDetails: React.FC = () => {
 
   const teamRankings = Object.values(teamPointsMap).sort((a, b) => b.points - a.points);
   const topScorers = Object.values(playerGoalsMap).sort((a, b) => b.goals - a.goals);
+  const topAssistPlayers = Object.values(playerAssistsMap).sort((a, b) => b.assists - a.assists);
   const ownGoalsList = Object.values(ownGoalsMap).sort((a, b) => b.ownGoals - a.ownGoals);
 
   const renderIconForTeam = (index: number) => {
@@ -141,6 +163,14 @@ const WeekDetails: React.FC = () => {
                 {topScorers.map((player, index) => (
                   <ol key={index} className="text-[hsl(var(--foreground))]">
                     <li>{player.name} - {player.goals}</li>
+                  </ol>
+                ))}
+              </div>
+              <div>
+                <h3 className="text-[hsl(var(--foreground))] text-lg">Assistências</h3>
+                {topAssistPlayers.map((player, index) => (
+                  <ol key={index} className="text-[hsl(var(--foreground))]">
+                    <li>{player.name} - {player.assists}</li>
                   </ol>
                 ))}
               </div>

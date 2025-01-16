@@ -1,6 +1,6 @@
 import { Player } from "@/types/player";
-import PlayerCardSmall from "../PlayerCardSmall";
 import { Team } from "@/types/team";
+import PlayerCardSmall from "../PlayerCardSmall";
 
 export default function Field({ team, showOverall }: { team: Team; showOverall: boolean }): JSX.Element {
   const chunkArray = (players: Player[], size: number): Player[][] => {
@@ -18,6 +18,7 @@ export default function Field({ team, showOverall }: { team: Team; showOverall: 
     GOL: [],
   };
 
+  // Agrupar jogadores por posição
   team.players.forEach((player: Player) => {
     if (player.position === 'ATK') {
       groupedPlayers.ATK.push(player);
@@ -32,17 +33,20 @@ export default function Field({ team, showOverall }: { team: Team; showOverall: 
 
   const playerGroups: Player[][] = [];
   const positions: (keyof typeof groupedPlayers)[] = ['ATK', 'MEI', 'DEF', 'GOL'];
+
+  // Ajuste para garantir que as linhas tenham no máximo 3 jogadores
   positions.forEach(position => {
     const players = groupedPlayers[position];
-    const chunkedPlayers = chunkArray(players, 5);
+    const chunkedPlayers = chunkArray(players, 3); // Agora cria grupos de no máximo 3 jogadores
     playerGroups.push(...chunkedPlayers);
   });
 
-  const gapValue = playerGroups.length === 4 ? 7 : 12;
+
+
 
   return (
-    <div className="bg-[url('../../public/new_field.jpg')] h-[870px] w-[559px] bg-cover bg-center bg-no-repeat">
-      <div className={`flex flex-col h-full justify-end gap-${gapValue} pb-[70px]`}>
+    <div className="bg-[url('../../public/new_field.jpg')] h-[1000px] w-[600px] bg-cover bg-center bg-no-repeat">
+      <div className={`flex flex-col h-full justify-end gap-[20px] pb-[70px]`}>
         {playerGroups.map((playersInGroup, groupIndex) => (
           <div key={groupIndex} className="flex flex-row justify-around">
             {playersInGroup.map((playerData, index) => (

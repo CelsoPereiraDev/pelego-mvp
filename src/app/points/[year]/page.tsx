@@ -1,16 +1,18 @@
-'use client'
+'use client';
 
 import { calculateSimplePlayerStats, SimplePlayerStats } from '@/mapper/playerStatMapper';
 import { useWeeksByDate } from '@/services/weeks/useWeeksByDate';
+
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 const PlayerStatsPage: React.FC = () => {
   const params = useParams();
-  const year = params.year as string;
-  const { weeks, isLoading, isError } = useWeeksByDate(year);
-
+  const year = parseInt(params.year as string, 10);
+  const { weeks, isLoading, isError } = useWeeksByDate(year.toString());
   const [playerStats, setPlayerStats] = useState<SimplePlayerStats[]>([]);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof SimplePlayerStats; direction: 'asc' | 'desc' } | null>(null);
+
 
   useEffect(() => {
     if (weeks && !isLoading && !isError) {
@@ -18,6 +20,30 @@ const PlayerStatsPage: React.FC = () => {
       setPlayerStats(stats);
     }
   }, [weeks, isLoading, isError]);
+
+  const sortedStats = React.useMemo(() => {
+    if (sortConfig !== null) {
+      return [...playerStats].sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return playerStats;
+  }, [playerStats, sortConfig]);
+
+  const requestSort = (key: keyof SimplePlayerStats) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -28,32 +54,36 @@ const PlayerStatsPage: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>Estatísticas dos Jogadores no Ano</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Pontos</th>
-            <th>Vitórias</th>
-            <th>Empates</th>
-            <th>Derrotas</th>
-            <th>Porcentagem de Pontos</th>
-          </tr>
-        </thead>
-        <tbody>
-          {playerStats.map(({ name, points, wins, draws, losses, pointsPercentage }, index) => (
-            <tr key={index}>
-              <td>{name}</td>
-              <td>{points}</td>
-              <td>{wins}</td>
-              <td>{draws}</td>
-              <td>{losses}</td>
-              <td>{pointsPercentage}%</td>
+    <div className="min-h-screen bg-[hsl(var(--background))] w-full flex flex-col items-center p-8">
+        <h1 className="text-3xl font-semibold mb-8 text-[hsl(var(--foreground))]">
+          Estatísticas dos Jogadores em {year}
+        </h1>
+      <div className="overflow-x-auto w-full max-w-[1200px]">
+        <table className="w-full border-collapse bg-[hsl(var(--card))] text-[hsl(var(--foreground))] shadow-md rounded-lg border border-[hsl(var(--border))] text-nowrap">
+          <thead className="bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]">
+           <tr>
+              <th className="px-4 py-2 text-left cursor-pointer" onClick={() => requestSort('name')}>Nome</th>
+              <th className="px-4 py-2 text-left cursor-pointer" onClick={() => requestSort('points')}>Pontos</th>
+              <th className="px-4 py-2 text-left cursor-pointer" onClick={() => requestSort('wins')}>Vitórias</th>
+              <th className="px-4 py-2 text-left cursor-pointer" onClick={() => requestSort('draws')}>Empates</th>
+              <th className="px-4 py-2 text-left cursor-pointer" onClick={() => requestSort('losses')}>Derrotas</th>
+              <th className="px-4 py-2 text-left cursor-pointer" onClick={() => requestSort('pointsPercentage')}>Porcentagem de Pontos</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {sortedStats.map(({ name, points, wins, draws, losses, pointsPercentage }, index) => (
+              <tr key={index} className="odd:bg-[hsl(var(--background))] even:bg-[hsl(var(--card))] hover:bg-[hsl(var(--accent))] transition-colors">
+                <td className="px-4 py-2">{name}</td>
+                <td className="px-4 py-2">{points}</td>
+                <td className="px-4 py-2">{wins}</td>
+                <td className="px-4 py-2">{draws}</td>
+                <td className="px-4 py-2">{losses}</td>
+                <td className="px-4 py-2">{pointsPercentage}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

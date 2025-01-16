@@ -46,8 +46,8 @@ const config = {
       colors: {
         customGold: '#9e7e47',
         customLightGold: '#fbdd97',
-        'custom-gradient-start': 'rgba(192, 33, 100, 1)',
-        'custom-gradient-end': 'rgba(192, 33, 100, 0.5)',
+        'custom-gradient-mvp-start': 'rgba(192, 33, 100, 0.6)',
+        'custom-gradient-mvp-end': 'rgba(192, 33, 100, 0.2)',
       },
     },
   },

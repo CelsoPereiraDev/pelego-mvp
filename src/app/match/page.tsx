@@ -56,7 +56,7 @@ const getAvailablePlayers = (allPlayers: Player[], selectedPlayers: string[]) =>
 };
 
 const CreateWeekAndMatchesForm: React.FC = () => {
-  const { register, handleSubmit, control, formState: { errors } } = useForm<CreateMatch>({
+   const { register, handleSubmit, control, formState: { errors } } = useForm<CreateMatch>({
     defaultValues: {
       teams: [{ players: [] }, { players: [] }]
     }
