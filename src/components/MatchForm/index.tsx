@@ -66,7 +66,7 @@ export const MatchForm = ({ index, control, teamFields, players,removeMatch }: M
   return (
     <div className="flex flex-col items-start gap-4 min-w-[600px] border-[1px] border-[#4D7133] p-4 rounded-lg">
       <div className="flex flex-row justify-between w-full">
-        <h3 className="my-auto text-[#333333]">Jogo {index + 1}</h3>
+        <h3 className="my-auto text-[#333433]">Jogo {index + 1}</h3>
         <div onClick={() => removeMatch(index)}>
           <DeleteOutlineIcon className="text-red-600" />
         </div>
@@ -189,7 +189,7 @@ export const MatchForm = ({ index, control, teamFields, players,removeMatch }: M
             </div>
           ))}
         </div>
-        <span className="my-auto text-[#333333]">X</span>
+        <span className="my-auto text-[#333433]">X</span>
         <div className="flex flex-col items-start gap-2 w-[460px]">
           <div className="flex flex-row items-center gap-2 w-full justify-end">
             <div className="w-20">

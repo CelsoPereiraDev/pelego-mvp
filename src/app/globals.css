@@ -2,55 +2,192 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom properties for dark theme */
+/* Modern Design System - Light Mode (Default) */
 :root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 250, 250, 252;
+
+  /* Core Colors - Light Mode */
+  --background: 0 0% 100%; /* Pure white */
+  --foreground: 240 10% 3.9%; /* Almost black */
+  --card: 0 0% 100%; /* White cards */
+  --card-foreground: 240 10% 3.9%; /* Dark text */
+  --popover: 0 0% 100%; /* White popover */
+  --popover-foreground: 240 10% 3.9%; /* Dark text */
+
+  /* Purple Primary - Modern vibrant purple */
+  --primary: 262 83% 58%; /* Vibrant purple #7c3aed */
+  --primary-foreground: 0 0% 100%; /* White text on purple */
+  --primary-hover: 262 83% 48%; /* Darker purple on hover */
+
+  /* Secondary - Light purple tints */
+  --secondary: 262 100% 97%; /* Very light purple */
+  --secondary-foreground: 262 83% 58%; /* Purple text */
+
+  /* Muted - Neutral grays */
+  --muted: 240 4.8% 95.9%; /* Light gray */
+  --muted-foreground: 240 3.8% 46.1%; /* Medium gray */
+
+  /* Accent - Purple accent */
+  --accent: 262 90% 95%; /* Light purple accent */
+  --accent-foreground: 262 83% 58%; /* Purple text */
+
+  /* Status Colors */
+  --destructive: 0 84.2% 60.2%; /* Red */
+  --destructive-foreground: 0 0% 100%; /* White */
+  --success: 142 76% 36%; /* Green */
+  --success-foreground: 0 0% 100%; /* White */
+  --warning: 38 92% 50%; /* Orange */
+  --warning-foreground: 0 0% 100%; /* White */
+
+  /* Borders & Inputs */
+  --border: 240 5.9% 90%; /* Light border */
+  --input: 240 5.9% 90%; /* Light input border */
+  --ring: 262 83% 58%; /* Purple focus ring */
+
+  /* Charts - Modern purple spectrum */
+  --chart-1: 262 83% 58%; /* Primary purple */
+  --chart-2: 200 98% 39%; /* Blue */
+  --chart-3: 142 76% 36%; /* Green */
+  --chart-4: 38 92% 50%; /* Orange */
+  --chart-5: 340 82% 52%; /* Pink */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  --radius: 0.5rem; /* Modern border radius */
+}
+
+/* Dark Mode - Purple & Dark theme */
+.dark {
   --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
+  --background-start-rgb: 10, 10, 12;
+  --background-end-rgb: 10, 10, 12;
 
-  --background: 224 71.4% 4.1%; /* Fundo principal */
-  --foreground: 210 20% 98%; /* Texto principal */
-  --card: 224 71.4% 4.1%; /* Fundo do card */
-  --card-foreground: 210 20% 98%; /* Texto no card */
-  --popover: 224 71.4% 4.1%; /* Fundo do popover */
-  --popover-foreground: 210 20% 98%; /* Texto no popover */
-  --primary: 263.4 70% 50.4%; /* Cor primária */
-  --primary-foreground: 210 20% 98%; /* Texto na cor primária */
-  --secondary: 215 27.9% 16.9%; /* Cor secundária */
-  --secondary-foreground: 210 20% 98%; /* Texto na cor secundária */
-  --muted: 215 27.9% 16.9%; /* Fundo neutro */
-  --muted-foreground: 217.9 10.6% 64.9%; /* Texto neutro */
-  --accent: 215 27.9% 16.9%; /* Cor de destaque */
-  --accent-foreground: 210 20% 98%; /* Texto na cor de destaque */
-  --destructive: 0 62.8% 30.6%; /* Cor destrutiva */
-  --destructive-foreground: 210 20% 98%; /* Texto na cor destrutiva */
-  --border: 215 27.9% 16.9%; /* Cor das bordas */
-  --input: 215 27.9% 16.9%; /* Fundo do input */
-  --ring: 263.4 70% 50.4%; /* Cor do anel de foco */
-  --chart-1: 220 70% 50%; /* Cor de gráfico 1 */
-  --chart-2: 160 60% 45%; /* Cor de gráfico 2 */
-  --chart-3: 30 80% 55%; /* Cor de gráfico 3 */
-  --chart-4: 280 65% 60%; /* Cor de gráfico 4 */
-  --chart-5: 340 75% 55%; /* Cor de gráfico 5 */
-  --placeholder: 216 10% 65%; /* Cor do placeholder */
-  --light-hover: 262.1 83.3% 65%; /* Hover roxo claro */
-  --text-light-gray: 210 20% 98%; /* Texto cinza claro */
+  /* Core Colors - Dark Mode */
+  --background: 240 10% 3.9%; /* Very dark */
+  --foreground: 0 0% 98%; /* Almost white */
+  --card: 240 5% 8%; /* Dark card */
+  --card-foreground: 0 0% 98%; /* Light text */
+  --popover: 240 5% 8%; /* Dark popover */
+  --popover-foreground: 0 0% 98%; /* Light text */
+
+  /* Purple Primary - Brighter in dark mode */
+  --primary: 262 83% 58%; /* Same vibrant purple */
+  --primary-foreground: 0 0% 100%; /* White text */
+  --primary-hover: 262 83% 68%; /* Lighter purple on hover */
+
+  /* Secondary - Dark purple tints */
+  --secondary: 240 5% 15%; /* Dark gray with purple tint */
+  --secondary-foreground: 0 0% 98%; /* Light text */
+
+  /* Muted - Dark grays */
+  --muted: 240 5% 15%; /* Dark gray */
+  --muted-foreground: 240 5% 64.9%; /* Medium gray */
+
+  /* Accent - Purple accent dark */
+  --accent: 262 50% 15%; /* Dark purple accent */
+  --accent-foreground: 262 83% 78%; /* Light purple text */
+
+  /* Status Colors - Adjusted for dark */
+  --destructive: 0 62.8% 50.6%; /* Red */
+  --destructive-foreground: 0 0% 98%; /* Light text */
+  --success: 142 76% 46%; /* Green */
+  --success-foreground: 0 0% 98%; /* Light text */
+  --warning: 38 92% 60%; /* Orange */
+  --warning-foreground: 0 0% 98%; /* Light text */
+
+  /* Borders & Inputs */
+  --border: 240 5% 20%; /* Dark border */
+  --input: 240 5% 20%; /* Dark input border */
+  --ring: 262 83% 58%; /* Purple focus ring */
+
+  /* Charts - Vibrant in dark mode */
+  --chart-1: 262 83% 68%; /* Bright purple */
+  --chart-2: 200 98% 49%; /* Bright blue */
+  --chart-3: 142 76% 46%; /* Bright green */
+  --chart-4: 38 92% 60%; /* Bright orange */
+  --chart-5: 340 82% 62%; /* Bright pink */
+
+  /* Shadows - Subtle in dark mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
 }
 
-/* Body styling */
+/* Base Styles */
+* {
+  border-color: hsl(var(--border));
+}
+
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: var(--font-main), system-ui, -apple-system, sans-serif;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Tailwind custom utility */
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary-hover));
+}
+
+/* Tailwind custom utilities */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Modern gradients */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(262 83% 48%) 100%);
+  }
+
+  .bg-gradient-subtle {
+    background: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%);
+  }
+
+  /* Glass morphism */
+  .glass {
+    background: hsla(var(--background) / 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Modern shadows */
+  .shadow-soft {
+    box-shadow: 0 2px 8px -2px hsl(var(--primary) / 0.1);
+  }
+
+  .shadow-primary {
+    box-shadow: 0 4px 14px 0 hsl(var(--primary) / 0.25);
+  }
+
+  /* Smooth transitions */
+  .transition-base {
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 }

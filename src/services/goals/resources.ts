@@ -1,7 +1,7 @@
 import { GoalDetails } from '@/types/match';
 import { QueryRequest } from '@/utils/QueryRequest';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3334/api';
 const ORGANIZATION_ID = 'your-organization-id';
 
 export async function createGoals(goalsData: GoalDetails[]) {

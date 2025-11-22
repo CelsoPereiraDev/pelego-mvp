@@ -77,7 +77,7 @@ const MonthResume: React.FC = () => {
   const router = useRouter();
   const { year, month } = useParams();
   const { weeks, isLoading, isError } = useWeeksByDate(year, month);
-  console.log("🆑 ~ weeks:", weeks)
+  
   const { players } = usePlayers();
   const [monthResume, setMonthResume] = useState(null);
   const [selectedPlayers, setSelectedPlayers] = useState({});

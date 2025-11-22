@@ -1,10 +1,7 @@
 import { CreateMatch, CreateMatchDataRequested } from "@/types/match";
 
 export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: string }[], weekId: string) {
-  console.log("Mapping form data to backend format");
-  console.log("Received data:", JSON.stringify(data, null, 2));
-  console.log("Created teams:", createdTeams);
-  console.log("Week ID:", weekId);
+  
 
   const matchesData: CreateMatchDataRequested[] = data.matches.map(match => {
     const homeTeam = createdTeams[parseInt(match.homeTeamId, 10)];
@@ -13,8 +10,6 @@ export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: stri
     if (!homeTeam || !awayTeam) {
       throw new Error('Missing team IDs in matches data');
     }
-
-    console.log(`Mapping match: Home Team ID ${homeTeam.id}, Away Team ID ${awayTeam.id}`);
 
     const mapGoals = (goals) => {
       return goals
@@ -35,7 +30,7 @@ export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: stri
     };
 
     const mapAssists = (assists) => {
-      console.log("Mapping assists:", assists);
+      
       return assists
         .filter(assist => assist.assists !== undefined && assist.assists !== null && assist.assists !== 0 && assist.playerId !== undefined)
         .map(assist => {
@@ -43,7 +38,7 @@ export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: stri
             playerId: assist.playerId,
             assists: typeof assist.assists === 'string' ? parseInt(assist.assists, 10) : assist.assists
           };
-          console.log("Mapped assist:", mappedAssist);
+          
           return mappedAssist;
         });
     };
@@ -59,12 +54,12 @@ export function mapFormDataToBackend(data: CreateMatch, createdTeams: { id: stri
       awayAssists: mapAssists(match.awayAssists || [])
     };
 
-    console.log("Mapped match data:", mappedMatch);
+    
 
     return mappedMatch;
   });
 
-  console.log("Final mapped matches data:", JSON.stringify(matchesData, null, 2));
+  
 
   return { matchesData };
 }

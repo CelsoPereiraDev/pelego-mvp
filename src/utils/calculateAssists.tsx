@@ -57,11 +57,6 @@ export const calculateSimpleAssistStats = (weeks: WeekResponse[]): SimpleAssistS
     return b.assists - a.assists;
   });
 
-  // Exibe informações no console
-  sortedAssistStats.forEach((player) => {
-    console.log(`Jogador: ${player.name}, Assistências: ${player.assists}, Partidas Jogadas: ${player.matchesPlayed}`);
-  });
-
   return sortedAssistStats;
 };
 

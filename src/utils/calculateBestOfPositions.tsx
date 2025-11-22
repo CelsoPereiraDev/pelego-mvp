@@ -17,6 +17,7 @@ export interface CalculateBestOfEachPositionProps {
   atackers: PlayerResumeData[];
   midfielders: PlayerResumeData[];
   defenders: PlayerResumeData[];
+  goalkeepers: PlayerResumeData[];
 }
 
 interface PlayerGoalsMap {
@@ -45,7 +46,7 @@ export const calculateBestOfEachPosition = (weeks: WeekResponse[]): CalculateBes
             if (!allPlayersGoalsMap[goal.player.id]) {
               allPlayersGoalsMap[goal.player.id] = { name: goal.player.name, goals: 0 };
             }
-            allPlayersGoalsMap[goal.player.id].goals += goal.goals; // Agora soma corretamente os gols do jogador
+            allPlayersGoalsMap[goal.player.id].goals += goal.goals;
           }
         });
       }
@@ -72,6 +73,7 @@ export const calculateBestOfEachPosition = (weeks: WeekResponse[]): CalculateBes
   const atackers: PlayerResumeData[] = [];
   const midfielders: PlayerResumeData[] = [];
   const defenders: PlayerResumeData[] = [];
+  const goalkeepers: PlayerResumeData[] = [];
 
   allPlayersGoalsAgainstCount.forEach((playerSummary) => {
     const playerId = Object.keys(allPlayersGoalsMap).find(
@@ -92,6 +94,8 @@ export const calculateBestOfEachPosition = (weeks: WeekResponse[]): CalculateBes
       totalPoints = ((goals * 0.5) + (assists * 0.6) + (championships * 2) + ((1 / (goalsAgainst + 1)) * 8) + (points * 0.1));
     } else if (playerSummary.position === 'DEF') {
       totalPoints = (((1 / (goalsAgainst + 1)) * 60) + ((goals + assists) * 0.1) + (points * 0.1) + (championships * 2)-25);
+    } else if (playerSummary.position === 'GOL') {
+      totalPoints = (((1 / (goalsAgainst + 1)) * 60) + ((goals + assists) * 0.1) + (points * 0.1) + (championships * 2)-25);
     }
 
     const playerData: PlayerResumeData = {
@@ -111,12 +115,15 @@ export const calculateBestOfEachPosition = (weeks: WeekResponse[]): CalculateBes
       midfielders.push(playerData);
     } else if (playerSummary.position === 'DEF') {
       defenders.push(playerData);
+    } else if (playerSummary.position === 'GOL') {
+      goalkeepers.push(playerData);
     }
   });
 
   return {
     atackers,
     midfielders,
-    defenders
+    defenders,
+    goalkeepers,
   };
 };

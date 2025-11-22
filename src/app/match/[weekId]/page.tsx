@@ -69,7 +69,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   const paramWeekId = params.weekId;
 
   const { week } = useWeek(paramWeekId as string);
-  console.log("🆑 ~ week:", week)
+  
 
   const defaultValues = useMemo(() => {
     
@@ -79,7 +79,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
       matches: [],
     };
   }, [week]);
-  console.log("🆑 ~ defaultValues ~ defaultValues:", defaultValues)
+  
   const { handleSubmit, control, formState: { errors }, reset } = useForm<CreateMatch>({
     resolver: zodResolver(CreateMatchSchema),
     defaultValues,
@@ -88,7 +88,6 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   useEffect(() => {
   if (week) {
     const mappedValues = mapWeekToFormValues(week);
-    console.log("🆑 ~ useEffect ~ mappedValues:", mappedValues);
     reset(mappedValues);
   }
 }, [week, reset]);

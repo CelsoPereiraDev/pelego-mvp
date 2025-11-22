@@ -54,7 +54,6 @@ export default function AddPlayersPage() {
 
   const onSubmit = async (formData: PlayerGetOverallFormData) => {
     const playerData = addPlayerMapper(formData);
-    console.log("🚀 ~ onSubmit ~ playerData:", playerData);
 
     try {
       const createdPlayer = await createPlayer(playerData);

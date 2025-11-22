@@ -54,6 +54,7 @@ const getBadge = (categoryKey: string, playerData: any) => {
     case 'Atackers':
     case 'Midfielders':
     case 'Defenders':
+    case 'Goalkeepers':
       return <TeamOfTheMonthCard playerData={playerData} showOverall={true} />;
     default:
       return null;
@@ -68,6 +69,8 @@ const getCategoryLabelInPortuguese = (category: string) => {
       return 'Meio-campo';
     case 'Defenders':
       return 'Defensor';
+    case 'Goalkeepers':
+      return 'Goleiro';
     default:
       return category; 
   }
@@ -77,13 +80,13 @@ const MonthResume: React.FC = () => {
   const router = useRouter();
   const { year, month } = useParams();
   const { weeks, isLoading, isError } = useWeeksByDate(year, month);
-  console.log("🆑 ~ weeks:", weeks)
+  
   const { players } = usePlayers();
   const [monthResume, setMonthResume] = useState(null);
   const [selectedPlayers, setSelectedPlayers] = useState({});
   const [bestOfEachPosition, setBestOfEachPosition] = useState(null);
   const [filteredPlayers, setFilteredPlayers] = useState([]);
-  const [teamOfTheMonth, setTeamOfTheMonth] = useState([]); // Armazena a "Seleção do Mês"
+  const [teamOfTheMonth, setTeamOfTheMonth] = useState([]);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   useEffect(() => {
@@ -108,7 +111,7 @@ const MonthResume: React.FC = () => {
       });
 
       // Preencher selectedPlayers com os valores padrão das posições
-      ['atackers', 'midfielders', 'defenders'].forEach(position => {
+      ['atackers', 'midfielders', 'defenders', 'goalkeepers'].forEach(position => {
         const sortedPlayers = bestOfEachPosition[position]?.sort((a, b) => b.point - a.point);
         const defaultFirstPlayer = sortedPlayers[0]?.name;
         const defaultSecondPlayer = sortedPlayers[1]?.name || defaultFirstPlayer;
@@ -151,7 +154,7 @@ const MonthResume: React.FC = () => {
     });
 
     // Para as posições, pegar os jogadores selecionados
-    ['atackers', 'midfielders', 'defenders'].forEach(position => {
+    ['atackers', 'midfielders', 'defenders', 'goalkeepers'].forEach(position => {
       const positionData = bestOfEachPosition[position];
       if (positionData) {
         positionData.forEach(playerData => {
@@ -206,12 +209,15 @@ const MonthResume: React.FC = () => {
           value={{ label: selectedPlayers[positionKey] || defaultFirstPlayer, value: selectedPlayers[positionKey] || defaultFirstPlayer }}
           onChange={(option) => handlePlayerSelect(positionKey, option.value)}
         />
+        {positionKey !== 'goalkeepers' && 
+        
         <SelectWithSearch
           isMulti={false}
           options={sortedPlayers.map(player => ({ label: player.name, value: player.name }))}
           value={{ label: selectedPlayers[`${positionKey}_second`] || defaultSecondPlayer, value: selectedPlayers[`${positionKey}_second`] || defaultSecondPlayer }}
           onChange={(option) => handlePlayerSelect(`${positionKey}_second`, option.value)}
         />
+        }
       </div>
     );
   };
@@ -226,6 +232,7 @@ const MonthResume: React.FC = () => {
         {renderPositionSelects('atackers', 'Atacantes', bestOfEachPosition.atackers)}
         {renderPositionSelects('midfielders', 'Meio-campistas', bestOfEachPosition.midfielders)}
         {renderPositionSelects('defenders', 'Defensores', bestOfEachPosition.defenders)}
+        {renderPositionSelects('goalkeepers', 'Goleiros', bestOfEachPosition.goalkeepers)}
       </div>
       
       <button

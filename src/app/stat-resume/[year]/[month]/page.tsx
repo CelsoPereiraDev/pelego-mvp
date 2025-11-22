@@ -26,7 +26,6 @@ const MonthResume: React.FC = () => {
   const year = parseInt(params.year as string, 10);
   const month = params.month ? parseInt(params.month as string, 10) : undefined;
   const { weeks, isLoading, isError } = useWeeksByDate(year.toString(), month?.toString());
-  console.log("🆑 ~ weeks:", weeks)
 
   const { players } = usePlayers();
 
@@ -39,7 +38,7 @@ const MonthResume: React.FC = () => {
       const stats = calculateMonthResume(weeks, ...excludedPlayerNames);
       
       // Garantir que cada categoria tenha pelo menos 5 jogadores
-      const ensureMinimumFivePlayers = (category: PlayerResumeData[]) => {
+      const ensureMinimumFivePlayers = (category) => {
         if (category.length < 5) {
           const sortedCategory = category.sort((a, b) => b.count - a.count);
           const playersToAdd = sortedCategory.slice(0, 5 - category.length);

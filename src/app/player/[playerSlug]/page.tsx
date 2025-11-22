@@ -41,7 +41,7 @@ export default function PlayerPage({ params: { playerSlug } }: PlayerProps) {
   const radialChartData =[{ goals: "PPG", 
     APG: ((playerStats?.goals || 0) + (playerStats?.assists || 0)),
     PIG: (playerStats?.teamGoals || 0) - ((playerStats?.goals || 0) + (playerStats?.assists || 0)) || 0 }]
-    console.log("🆑 ~ PlayerPage ~ PIG:", radialChartData[0].PIG)
+    
 
   const radialChartConfig = {
     APG: {

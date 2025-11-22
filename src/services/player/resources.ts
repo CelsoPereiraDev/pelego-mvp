@@ -2,7 +2,7 @@ import { CreatePlayerDataRequested, PlayerResponse } from '@/types/player';
 import { QueryRequest } from '@/utils/QueryRequest';
 
 
-const BASE_URL = 'http://localhost:3333/api';
+const BASE_URL = 'http://localhost:3334/api';
 const CLIENT_ID = 'client-id';
 
 export async function getPlayers() {

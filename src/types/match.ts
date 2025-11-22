@@ -20,6 +20,7 @@ export interface MatchResponse {
   result?: MatchResultResponse;
   goals: GoalResponse[];
   assists: AssistResponse[];
+  orderIndex?: number
 }
 
 export interface CreateMatchDataRequested {
