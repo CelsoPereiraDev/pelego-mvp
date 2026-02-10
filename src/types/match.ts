@@ -91,7 +91,7 @@ export type CreateMatch = {
     };
     homeAssists: {
         assists: number;
-        playerId: string;  
+        playerId: string;
       }[];
     awayGoals: {
       goalsCount: string;
@@ -108,3 +108,51 @@ export type CreateMatch = {
     awayTeamId: string;
   }[];
 };
+
+export interface CreateWeekAndMatchesRequest {
+  date: string;
+  teams: string[][];
+  matches: {
+    homeTeamIndex: number;
+    awayTeamIndex: number;
+    homeGoals: {
+      playerId?: string;
+      ownGoalPlayerId?: string;
+      goals: number;
+    }[];
+    awayGoals: {
+      playerId?: string;
+      ownGoalPlayerId?: string;
+      goals: number;
+    }[];
+    homeAssists: {
+      playerId: string;
+      assists: number;
+    }[];
+    awayAssists: {
+      playerId: string;
+      assists: number;
+    }[];
+  }[];
+}
+
+export interface CreateWeekAndMatchesResponse {
+  message: string;
+  week: {
+    id: string;
+    date: string;
+  };
+  teams: {
+    id: string;
+    points: number;
+    champion: boolean;
+    players: string[];
+  }[];
+  matches: {
+    id: string;
+    homeTeamId: string;
+    awayTeamId: string;
+    result: MatchResultResponse;
+  }[];
+  championTeamId: string | null;
+}

@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useToast } from '@/hooks/use-toast';
 import { useWeek } from '@/services/weeks/useWeek';
 import { useWeeks } from '@/services/weeks/useWeeks';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,7 +22,9 @@ import React, { useEffect, useState } from 'react';
 const WeeksList: React.FC = () => {
   const { weeks, isLoading, error } = useWeeks();
   const [deletingWeekId, setDeletingWeekId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { delete: deleteWeek } = useWeek(deletingWeekId || '');
+  const { toast } = useToast();
 
   const router = useRouter();
 
@@ -42,25 +45,45 @@ const WeeksList: React.FC = () => {
     try {
       setDeletingWeekId(weekId);
     } catch (error) {
-      alert('Erro ao deletar semana');
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao deletar semana',
+        description: 'Ocorreu um erro ao tentar deletar a semana. Tente novamente.',
+      });
     }
   };
 
   useEffect(() => {
     const deleteSelectedWeek = async () => {
       if (deletingWeekId) {
+        setIsDeleting(true);
         try {
-          await deleteWeek();
-          alert('Semana deletada com sucesso');
+          const result = await deleteWeek();
+
+          const description = result.championPlayersAffected > 0
+            ? `${result.totalPlayersAffected} jogadores afetados. ${result.championPlayersAffected} campeões revertidos. Todos os dados relacionados foram removidos.`
+            : `${result.totalPlayersAffected} jogadores afetados. Todos os dados relacionados foram removidos.`;
+
+          toast({
+            variant: 'success',
+            title: 'Semana deletada com sucesso!',
+            description,
+          });
           setDeletingWeekId(null);
         } catch (error) {
-          alert('Erro ao deletar semana');
+          toast({
+            variant: 'destructive',
+            title: 'Erro ao deletar semana',
+            description: error instanceof Error ? error.message : 'Ocorreu um erro ao deletar a semana. Tente novamente.',
+          });
           setDeletingWeekId(null);
+        } finally {
+          setIsDeleting(false);
         }
       }
     };
     deleteSelectedWeek();
-  }, [deletingWeekId, deleteWeek]);
+  }, [deletingWeekId, deleteWeek, toast]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -107,11 +130,21 @@ const WeeksList: React.FC = () => {
                     </DialogDescription>
                   </DialogHeader>
                    <button
-                    className="bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] p-3 w-[200px] rounded flex flex-row gap-1 items-center"
+                    className="bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] p-3 w-[200px] rounded flex flex-row gap-2 items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => handleDelete(week.id)}
+                    disabled={isDeleting}
                   >
-                     <DeleteOutlineIcon />
-                    <div>Deletar Semana {index + 1} </div>
+                    {isDeleting && deletingWeekId === week.id ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Deletando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <DeleteOutlineIcon />
+                        <span>Deletar Semana {index + 1}</span>
+                      </>
+                    )}
                   </button>
                 </DialogContent>
               </Dialog>

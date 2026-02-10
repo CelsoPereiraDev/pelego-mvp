@@ -1,4 +1,4 @@
-import { CreateMatchDataRequested, GoalDetails, MatchResponse } from '@/types/match';
+import { CreateMatchDataRequested, CreateWeekAndMatchesRequest, CreateWeekAndMatchesResponse, GoalDetails, MatchResponse } from '@/types/match';
 import { QueryRequest } from '@/utils/QueryRequest';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3334/api';
@@ -51,6 +51,40 @@ export async function createWeekWithTeams(date: string, teams: string[][]) {
 
   if (!response.ok) {
     throw new Error('Failed to create week and teams');
+  }
+
+  return await response.json();
+}
+
+export async function createWeekAndMatches(data: CreateWeekAndMatchesRequest): Promise<CreateWeekAndMatchesResponse> {
+  const response = await fetch(`${BASE_URL}/create_week_and_matches`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to create week and matches');
+  }
+
+  return await response.json();
+}
+
+export async function updateWeekAndMatches(weekId: string, data: CreateWeekAndMatchesRequest): Promise<CreateWeekAndMatchesResponse> {
+  const response = await fetch(`${BASE_URL}/week/${weekId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to update week and matches');
   }
 
   return await response.json();

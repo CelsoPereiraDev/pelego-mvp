@@ -1,6 +1,7 @@
 import { WeekResponse } from "@/types/weeks";
+import { PlayerResponse } from "@/types/player";
 
-export const mapWeekToFormValues = (week: WeekResponse) => {
+export const mapWeekToFormValues = (week: WeekResponse, players: PlayerResponse[]) => {
   const mappedMatchIds = new Set();
 
   // Mapeia o ID dos times para o índice correspondente em teams
@@ -9,73 +10,121 @@ export const mapWeekToFormValues = (week: WeekResponse) => {
     return acc;
   }, {} as Record<string, number>);
 
+  // Cria um mapa de playerId -> teamId para identificar a qual time cada jogador pertence
+  const playerToTeamMap: Record<string, string> = {};
+  week?.teams.forEach(team => {
+    team.players.forEach(player => {
+      playerToTeamMap[player.playerId] = team.id;
+    });
+  });
+
   return {
-    date: week?.date.toString(),
+    date: week?.date ? new Date(week.date).toISOString().split('T')[0] : '',
     teams: week?.teams.map(team => ({
       players: team.players.map(player => player.playerId),
-    })),
+    })) || [],
     matches: week?.teams.flatMap(team => {
-      return team.matchesHome.concat(team.matchesAway).map(match => {
+      return team.matchesHome.concat(team.matchesAway);
+    })
+    .sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0))
+    .map(match => {
         if (mappedMatchIds.has(match.id)) return null;
         mappedMatchIds.add(match.id);
 
-        const homeGoals = match.goals
-          .filter(goal => goal.ownGoalPlayerId === null && goal.playerId && match.homeTeamId === team.id)
-          .map(goal => ({
-            goals: goal.goals,
-            playerId: goal.playerId,
-            ownGoalPlayerId: null,
-          }));
+        // Separar gols por time
+        const homeGoalsForForm: any[] = [];
+        const awayGoalsForForm: any[] = [];
 
-        const awayGoals = match.goals
-          .filter(goal => goal.ownGoalPlayerId === null && goal.playerId && match.awayTeamId === team.id)
-          .map(goal => ({
-            goals: goal.goals,
-            playerId: goal.playerId,
-            ownGoalPlayerId: null,
-          }));
+        match.goals.forEach(goal => {
+          // Gol contra (ownGoal)
+          if (goal.ownGoalPlayerId) {
+            const ownGoalPlayerTeam = playerToTeamMap[goal.ownGoalPlayerId];
 
-        const ownGoalsHome = match.goals
-          .filter(goal => goal.ownGoalPlayerId && match.homeTeamId === team.id)
-          .map(goal => ({
-            goals: goal.goals,
-            playerId: null,
-            ownGoalPlayerId: goal.ownGoalPlayerId,
-          }));
+            // Se o jogador que fez gol contra é do time da casa, beneficia o away
+            // Se o jogador que fez gol contra é do time visitante, beneficia o home
+            const benefitsHomeTeam = ownGoalPlayerTeam === match.awayTeamId;
 
-        const ownGoalsAway = match.goals
-          .filter(goal => goal.ownGoalPlayerId && match.awayTeamId === team.id)
-          .map(goal => ({
-            goals: goal.goals,
-            playerId: null,
-            ownGoalPlayerId: goal.ownGoalPlayerId,
-          }));
+            for (let i = 0; i < goal.goals; i++) {
+              const goalEntry = {
+                goals: 1,
+                playerId: 'GC',
+                ownGoalPlayerId: goal.ownGoalPlayerId,
+              };
 
-        return {
-          homeTeamId: teamIndexMap[match.homeTeamId], // Mapeia para o índice do time mandante
-          awayTeamId: teamIndexMap[match.awayTeamId], // Mapeia para o índice do time visitante
+              if (benefitsHomeTeam) {
+                homeGoalsForForm.push(goalEntry);
+              } else {
+                awayGoalsForForm.push(goalEntry);
+              }
+            }
+          }
+          // Gol normal
+          else if (goal.playerId) {
+            const scorerTeam = playerToTeamMap[goal.playerId];
+
+            for (let i = 0; i < goal.goals; i++) {
+              const goalEntry = {
+                goals: 1,
+                playerId: goal.playerId,
+                ownGoalPlayerId: '',
+              };
+
+              if (scorerTeam === match.homeTeamId) {
+                homeGoalsForForm.push(goalEntry);
+              } else if (scorerTeam === match.awayTeamId) {
+                awayGoalsForForm.push(goalEntry);
+              }
+            }
+          }
+        });
+
+        // Separar assistências por time
+        const homeAssists: any[] = [];
+        const awayAssists: any[] = [];
+
+        match.assists.forEach(assist => {
+          const assistPlayerTeam = playerToTeamMap[assist.playerId];
+
+          // Criar uma entrada para cada assistência individual (assists: 1)
+          for (let i = 0; i < assist.assists; i++) {
+            const assistEntry = {
+              assists: 1,
+              playerId: assist.playerId,
+            };
+
+            if (assistPlayerTeam === match.homeTeamId) {
+              homeAssists.push(assistEntry);
+            } else if (assistPlayerTeam === match.awayTeamId) {
+              awayAssists.push(assistEntry);
+            }
+          }
+        });
+
+        // Garantir que assistências tenham o mesmo tamanho que gols
+        // (o formulário espera uma entrada de assistência para cada gol)
+        while (homeAssists.length < homeGoalsForForm.length) {
+          homeAssists.push({ assists: 0, playerId: '' });
+        }
+        while (awayAssists.length < awayGoalsForForm.length) {
+          awayAssists.push({ assists: 0, playerId: '' });
+        }
+
+        const result = {
+          homeTeamId: teamIndexMap[match.homeTeamId].toString(),
+          awayTeamId: teamIndexMap[match.awayTeamId].toString(),
           homeGoals: {
-            goalsCount: (homeGoals.length + ownGoalsAway.length).toString(),
-            whoScores: homeGoals.concat(ownGoalsAway),
+            goalsCount: homeGoalsForForm.length.toString(),
+            whoScores: homeGoalsForForm,
           },
           awayGoals: {
-            goalsCount: (awayGoals.length + ownGoalsHome.length).toString(),
-            whoScores: awayGoals.concat(ownGoalsHome),
+            goalsCount: awayGoalsForForm.length.toString(),
+            whoScores: awayGoalsForForm,
           },
-          homeAssists: match.assists
-            .filter(assist => match.homeTeamId === team.id)
-            .map(assist => ({
-              assists: assist.assists,
-              playerId: assist.playerId,
-            })),
-          awayAssists: match.assists
-            .filter(assist => match.awayTeamId === team.id)
-            .map(assist => ({
-              assists: assist.assists,
-              playerId: assist.playerId,
-            })),
+          homeAssists,
+          awayAssists,
         };
-      }).filter(match => match !== null);
-    }),
+        console.log("🔍 Match mapped:", { matchId: match.id, homeAssists, awayAssists, homeGoalsForForm, awayGoalsForForm });
+        return result;
+      }).filter(match => match !== null) || [],
   };
 };

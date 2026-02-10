@@ -1,22 +1,18 @@
 'use client';
 
-import { MatchForm } from '@/components/MatchForm';
-import { mapFormDataToBackend } from '@/mapper/createMatches';
-import { useCreateMatches } from '@/services/matchs/useCreateMatch';
-
-import { useCreateWeekWithTeams } from '@/services/matchs/useCreateWeekWithTeams';
+import MatchForm from '@/components/MatchForm';
+import { useToast } from '@/hooks/use-toast';
+import { useCreateWeekAndMatches } from '@/services/matchs/useCreateWeekAndMatches';
 import { usePlayers } from '@/services/player/usePlayers';
-import { useTeams } from '@/services/teams/useTeams';
 import { Player } from '@/types/player';
 import { Save } from '@mui/icons-material';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import QueuePlayNextIcon from '@mui/icons-material/QueuePlayNext';
 import ScoreboardIcon from '@mui/icons-material/Scoreboard';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import Select from 'react-select';
 
-export type CreateMatch = {
+export type CreateMatchForm = {
   date: string;
   teams: {
     players: string[];
@@ -32,9 +28,9 @@ export type CreateMatch = {
       }[];
     };
     homeAssists: {
-        assists: number;
-        playerId: string;  
-      }[];
+      assists: number;
+      playerId: string;
+    }[];
     awayGoals: {
       goalsCount: string;
       whoScores: {
@@ -44,9 +40,9 @@ export type CreateMatch = {
       }[];
     };
     awayAssists: {
-        assists: number;
-        playerId: string;
-      }[];
+      assists: number;
+      playerId: string;
+    }[];
     awayTeamId: string;
   }[];
 };
@@ -56,18 +52,19 @@ const getAvailablePlayers = (allPlayers: Player[], selectedPlayers: string[]) =>
 };
 
 const CreateWeekAndMatchesForm: React.FC = () => {
-   const { register, handleSubmit, control, formState: { errors } } = useForm<CreateMatch>({
+  const { register, handleSubmit, control, formState: { errors }, reset } = useForm<CreateMatchForm>({
     defaultValues: {
-      teams: [{ players: [] }, { players: [] }]
+      teams: [{ players: [] }, { players: [] }],
+      matches: []
     }
   });
-  const [createdTeams, setCreatedTeams] = useState<{
-    players: any; id: string 
-  }[]>([]);
 
-  const [weekId, setWeekId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const selectedPlayers = useWatch({ control, name: 'teams' }).flatMap((team: { players: string[] }) => team.players);
   const { players, isLoading } = usePlayers();
+  const { toast } = useToast();
+  const { createWeekWithMatches } = useCreateWeekAndMatches();
+
   const { fields: teamFields, append: appendTeam, update: updateTeam } = useFieldArray({
     control,
     name: 'teams'
@@ -77,106 +74,6 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     control,
     name: 'matches'
   });
-  const { createWeek } = useCreateWeekWithTeams();
-  const { createNewMatches } = useCreateMatches();
-  const { update } = useTeams();
-
-
-  const handleCreateTeams: SubmitHandler<CreateMatch> = async data => {
-  try {
-    const weekData = {
-      date: data.date,
-      teams: data.teams.map(team => team.players)
-    };
-
-    const result = await createWeek(weekData);
-
-    if (!result.createdTeams || result.createdTeams.length === 0) {
-      throw new Error("No teams were created");
-    }
-
-    setCreatedTeams(result.createdTeams);
-    setWeekId(result.week.id);
-
-    alert('Teams created successfully! Now you can create matches.');
-  } catch (error) {
-    console.error('Error creating teams:', error);
-    alert('Failed to create teams');
-  }
-  };
-
-
-  const handleCreateMatches: SubmitHandler<CreateMatch> = async data => {
-    try {
-      if (!weekId) {
-        throw new Error("Week ID must be set before creating matches.");
-      }
-
-      const { matchesData } = mapFormDataToBackend(data, createdTeams, weekId);
-      const createdMatchesResponse = await createNewMatches({ matches: matchesData });
-      
-
-      const createdMatches = createdMatchesResponse.createdMatches;
-      if (!Array.isArray(createdMatches)) {
-        throw new Error("Expected createdMatches to be an array, but got:", createdMatches);
-      }
-      
-
-      const teamPoints: Record<string, number> = {};
-
-      createdMatches.forEach(match => {
-        const { homeTeamId, awayTeamId, result } = match;
-        
-
-        if (!teamPoints[homeTeamId]) {
-          teamPoints[homeTeamId] = 0;
-        }
-        if (!teamPoints[awayTeamId]) {
-          teamPoints[awayTeamId] = 0;
-        }
-
-        const homeGoals = result?.homeGoals || 0;
-        const awayGoals = result?.awayGoals || 0;
-
-        
-
-        if (homeGoals > awayGoals) {
-          teamPoints[homeTeamId] += 3; // Vitória do time da casa
-          
-        } else if (homeGoals < awayGoals) {
-          teamPoints[awayTeamId] += 3; // Vitória do time visitante
-          
-        } else {
-          teamPoints[homeTeamId] += 1; // Empate
-          teamPoints[awayTeamId] += 1; // Empate
-          
-        }
-      });
-
-      const pointsArray = Object.values(teamPoints);
-      const maxPoints = Math.max(...pointsArray);
-      const championTeams = Object.keys(teamPoints).filter(
-        (team) => teamPoints[team] === maxPoints
-      );
-      
-      const updatedTeams = createdTeams.map((team) => ({
-        id: team.id,
-        champion: championTeams.length === 1 && team.id === championTeams[0],
-        points: teamPoints[team.id] || 0,
-        players: team.players.map((player) => ({
-          id: player.id,
-          isChampion: championTeams.length === 1 && team.id === championTeams[0],
-        })),
-      }));
-      
-      await update(updatedTeams);
-
-      alert('Matches created successfully! Champions of the week have been set.');
-    } catch (error) {
-      console.error('Error creating matches:', error);
-      alert('Failed to create matches');
-    }
-  };
 
   const handleAddTeam = useCallback(() => {
     appendTeam({ players: [] });
@@ -186,39 +83,158 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     appendMatch({
       homeTeamId: '',
       homeGoals: { goalsCount: '', whoScores: [] },
+      homeAssists: [],
       awayGoals: { goalsCount: '', whoScores: [] },
+      awayAssists: [],
       awayTeamId: ''
     });
   }, [appendMatch]);
+
+  const handleCreateWeekAndMatches: SubmitHandler<CreateMatchForm> = async (data) => {
+    setIsSubmitting(true);
+
+    try {
+      // Validação inicial
+      if (data.teams.length < 2) {
+        toast({
+          variant: 'destructive',
+          title: 'Erro de validação',
+          description: 'É necessário ter pelo menos 2 times',
+        });
+        return;
+      }
+
+      if (data.matches.length === 0) {
+        toast({
+          variant: 'destructive',
+          title: 'Erro de validação',
+          description: 'É necessário ter pelo menos 1 partida',
+        });
+        return;
+      }
+
+      // Mapear dados do formulário para o formato da API
+      const requestData = {
+        date: data.date,
+        teams: data.teams.map(team => team.players),
+        matches: data.matches.map(match => {
+          const homeTeamIndex = parseInt(match.homeTeamId, 10);
+          const awayTeamIndex = parseInt(match.awayTeamId, 10);
+
+          // Mapear gols
+          const mapGoals = (goals: any[]) => {
+            return goals
+              .filter(goal => goal.goals !== undefined && goal.goals !== null && goal.goals !== 0)
+              .map(goal => {
+                if (goal.playerId === 'GC') {
+                  return {
+                    ownGoalPlayerId: goal.ownGoalPlayerId,
+                    goals: typeof goal.goals === 'string' ? parseInt(goal.goals, 10) : goal.goals
+                  };
+                } else {
+                  return {
+                    playerId: goal.playerId,
+                    goals: typeof goal.goals === 'string' ? parseInt(goal.goals, 10) : goal.goals
+                  };
+                }
+              });
+          };
+
+          // Mapear assistências
+          const mapAssists = (assists: any[]) => {
+            return assists
+              .filter(assist => assist.assists !== undefined && assist.assists !== null && assist.assists !== 0 && assist.playerId !== undefined)
+              .map(assist => ({
+                playerId: assist.playerId,
+                assists: typeof assist.assists === 'string' ? parseInt(assist.assists, 10) : assist.assists
+              }));
+          };
+
+          return {
+            homeTeamIndex,
+            awayTeamIndex,
+            homeGoals: mapGoals(match.homeGoals.whoScores || []),
+            awayGoals: mapGoals(match.awayGoals.whoScores || []),
+            homeAssists: mapAssists(match.homeAssists || []),
+            awayAssists: mapAssists(match.awayAssists || [])
+          };
+        })
+      };
+
+      const result = await createWeekWithMatches(requestData);
+
+      toast({
+        variant: 'success',
+        title: 'Sucesso!',
+        description: result.championTeamId
+          ? 'Semana e partidas criadas com sucesso! Campeão da semana definido.'
+          : 'Semana e partidas criadas com sucesso! Não houve campeão nesta semana (empate).',
+      });
+
+      // Resetar formulário
+      reset({
+        date: '',
+        teams: [{ players: [] }, { players: [] }],
+        matches: []
+      });
+
+    } catch (error) {
+      console.error('Erro ao criar semana e partidas:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao criar semana',
+        description: error instanceof Error ? error.message : 'Ocorreu um erro ao criar a semana e partidas. Tente novamente.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const availablePlayers = useMemo(() => {
     return players ? getAvailablePlayers(players, selectedPlayers) : [];
   }, [players, selectedPlayers]);
 
-  if (isLoading) return <div>Loading players...</div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#333333] w-screen flex justify-center items-center">
+        <div className="text-white text-xl">Carregando jogadores...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#333333] w-screen flex justify-start flex-col p-12 items-center gap-7">
       <div className="max-w-[1440px] p-6 bg-white min-h-full rounded-lg overflow-auto text-black">
-        <form onSubmit={handleSubmit(handleCreateTeams)}>
-          <div>
-            <label className='mr-4'>Data</label>
-            <input type="datetime-local" {...register('date', { required: true })} />
-            {errors.date && <span>This field is required</span>}
+        <h1 className="text-2xl font-bold mb-6">Criar Semana e Partidas</h1>
+
+        <form onSubmit={handleSubmit(handleCreateWeekAndMatches)}>
+          {/* Data da Semana */}
+          <div className="mb-6">
+            <label className="mr-4 font-semibold">Data da Semana</label>
+            <input
+              type="datetime-local"
+              {...register('date', { required: true })}
+              className="border border-gray-300 rounded px-3 py-2"
+              disabled={isSubmitting}
+            />
+            {errors.date && <span className="text-red-500 ml-2">Campo obrigatório</span>}
           </div>
 
-          <div>
-            <label>Times</label>
-            <div className="flex flex-row gap-4 items-center mt-4">
+          {/* Times */}
+          <div className="mb-6">
+            <label className="font-semibold text-lg mb-4 block">Times</label>
+            <div className="flex flex-row gap-4 items-center mt-4 flex-wrap">
               {teamFields.map((team, index) => (
-                <div key={team.id} className="flex flex-row gap-4 items-center">
-                  <h3>Time {index + 1}</h3>
+                <div key={team.id} className="flex flex-row gap-4 items-center border border-gray-200 p-4 rounded">
+                  <h3 className="font-medium">Time {index + 1}</h3>
                   <Controller
                     control={control}
                     name={`teams.${index}.players`}
+                    rules={{ required: true }}
                     render={({ field }) => (
                       <Select
                         isMulti
+                        isDisabled={isSubmitting}
                         options={availablePlayers.map(player => ({ label: player.name, value: player.id }))}
                         value={field.value.map(playerId => players?.find(player => player.id === playerId)).filter(Boolean).map(player => ({ label: player?.name, value: player?.id }))}
                         onChange={(selectedOptions) => {
@@ -226,31 +242,72 @@ const CreateWeekAndMatchesForm: React.FC = () => {
                           field.onChange(selectedPlayerIds);
                           updateTeam(index, { players: selectedPlayerIds });
                         }}
+                        placeholder="Selecione os jogadores..."
+                        className="min-w-[300px]"
                       />
                     )}
                   />
                 </div>
               ))}
             </div>
-          </div>
-            <div className='flex flex-row gap-4 my-4'>
-              <button type="button" className="px-4 py-2 bg-[#4D7133] text-white rounded flex flex-row gap-2 items-center justify-center w-56" onClick={handleAddTeam}><GroupAddIcon/>Adicionar Time</button>
-              <button type="submit" className="px-4 py-2 bg-white border-[1px] border-[#4D7133] text-[#4D7133] rounded flex flex-row gap-2 items-center w-56 justify-center"><QueuePlayNextIcon/>Cadastrar Times</button>
+            <div className="flex flex-row gap-4 mt-4">
+              <button
+                type="button"
+                className="px-4 py-2 bg-[#4D7133] text-white rounded flex flex-row gap-2 items-center justify-center w-56 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleAddTeam}
+                disabled={isSubmitting}
+              >
+                <GroupAddIcon />Adicionar Time
+              </button>
             </div>
-        </form>
-
-        <form onSubmit={handleSubmit(handleCreateMatches)}>
-          <div className="flex flex-col gap-4 mt-8">
-            {matchFields.map((match, index) => (
-              <MatchForm key={match.id} index={index} control={control} teamFields={teamFields} players={players}  removeMatch={removeMatch}/>
-            ))}
           </div>
 
-          <div className="flex flex-row gap-4 mt-4">
-            <button type="button" className="px-4 py-2 bg-[#4D7133] text-white rounded flex flex-row gap-2 items-center justify-center w-56" onClick={handleAddMatch}>
-              <ScoreboardIcon/>Adicionar Partida
+          {/* Partidas */}
+          <div className="mb-6">
+            <label className="font-semibold text-lg mb-4 block">Partidas</label>
+            <div className="flex flex-col gap-4">
+              {matchFields.map((match, index) => (
+                <MatchForm
+                  key={match.id}
+                  index={index}
+                  control={control}
+                  teamFields={teamFields}
+                  players={players || []}
+                  removeMatch={removeMatch}
+                />
+              ))}
+            </div>
+
+            <div className="flex flex-row gap-4 mt-4">
+              <button
+                type="button"
+                className="px-4 py-2 bg-[#4D7133] text-white rounded flex flex-row gap-2 items-center justify-center w-56 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleAddMatch}
+                disabled={isSubmitting}
+              >
+                <ScoreboardIcon />Adicionar Partida
+              </button>
+            </div>
+          </div>
+
+          {/* Botão Salvar */}
+          <div className="flex justify-end mt-8">
+            <button
+              type="submit"
+              className="px-6 py-3 bg-[#4D7133] text-white rounded flex flex-row gap-2 items-center justify-center min-w-[200px] text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <Save />Salvar Tudo
+                </>
+              )}
             </button>
-            <button type="submit" className="px-4 py-2 bg-white border-[1px] border-[#4D7133] text-[#4D7133] rounded flex flex-row gap-2 items-center w-56 justify-center"><Save/>Cadastrar Partidas</button>
           </div>
         </form>
       </div>

@@ -80,10 +80,14 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     };
   }, [week]);
   
-  const { handleSubmit, control, formState: { errors }, reset } = useForm<CreateMatch>({
+  const { handleSubmit, control, formState: { errors }, reset, getValues } = useForm<CreateMatch>({
     resolver: zodResolver(CreateMatchSchema),
     defaultValues,
   });
+  console.log("🆑 ~ CreateWeekAndMatchesForm ~ errors:", errors)
+  console.log("🔴 ~ Form values on render:", JSON.stringify(getValues(), null, 2))
+
+  console.log("🆑 ~ CreateWeekAndMatchesForm ~ defaultValues:", defaultValues)
 
   useEffect(() => {
   if (week) {
@@ -92,6 +96,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   }
 }, [week, reset]);
 
+    
 
   const [createdTeams, setCreatedTeams] = useState<{
     players: any; id: string 
@@ -104,6 +109,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
     control,
     name: 'teams'
   });
+  console.log("🆑 ~ CreateWeekAndMatchesForm ~ teamFields:", teamFields)
   const { fields: matchFields, append: appendMatch, remove: removeMatch } = useFieldArray({
     control,
     name: 'matches'
@@ -137,6 +143,7 @@ const CreateWeekAndMatchesForm: React.FC = () => {
   };
 
   const handleCreateMatches: SubmitHandler<CreateMatch> = async data => {
+    console.log("🚀 Submit data:", JSON.stringify(data, null, 2));
     try {
       if (!weekId) {
         throw new Error("Week ID must be set before creating matches.");
@@ -277,7 +284,11 @@ const CreateWeekAndMatchesForm: React.FC = () => {
           </div>
         </form>
 
-        <form onSubmit={handleSubmit(handleCreateMatches)} className="flex flex-col gap-4">
+        <form onSubmit={(e) => {
+          console.log("🔴 FORM VALUES BEFORE SUBMIT:", JSON.stringify(getValues(), null, 2));
+          console.log("🔴 Match 7 specifically:", getValues().matches?.[7]);
+          handleSubmit(handleCreateMatches)(e);
+        }} className="flex flex-col gap-4">
           <div className="flex flex-col gap-4 mt-8">
             {matchFields.map((match, index) => (
               <MatchForm

@@ -35,8 +35,18 @@ export const Badge: React.FC<BadgeProps> = ({ playerData, children }) => {
         }
     };
 
+    const getShadow = () => {
+        if (playerData.overall.overall >= 74) {
+            return "shadow-tier-gold";
+        } else if (playerData.overall.overall >= 65) {
+            return "shadow-tier-silver";
+        } else {
+            return "shadow-tier-bronze";
+        }
+    };
+
     return (
-        <div className={`${getBackgroundImage()} h-[200px] w-[200px] bg-contain bg-center bg-no-repeat`}>
+        <div className={`${getBackgroundImage()} ${getShadow()} h-[200px] w-[200px] bg-contain bg-center bg-no-repeat transition-base hover:scale-105`}>
             {children}
         </div>
     );
@@ -53,8 +63,18 @@ export const BestOfMonthBadge: React.FC<BadgeProps> = ({ playerData, children })
         }
     };
 
+    const getShadow = () => {
+        if (playerData.overall.overall >= 74) {
+            return "shadow-tier-gold animate-trophy";
+        } else if (playerData.overall.overall >= 65) {
+            return "shadow-tier-silver";
+        } else {
+            return "shadow-tier-bronze";
+        }
+    };
+
     return (
-        <div className={`${getBackgroundImage()} h-[200px] w-[200px] bg-contain bg-center bg-no-repeat`}>
+        <div className={`${getBackgroundImage()} ${getShadow()} h-[200px] w-[200px] bg-contain bg-center bg-no-repeat transition-base hover:scale-105`}>
             {children}
         </div>
     );

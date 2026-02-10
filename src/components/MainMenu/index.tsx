@@ -33,7 +33,14 @@ export default function MainMenu() {
   };
 
   return (
-    <MenuExpansible open={open} onClick={() => setOpen(!open)} logo={<span className='text-xl leading-none text-[hsl(var(--primary))]'>PELEGO</span>}>
+    <MenuExpansible open={open} onClick={() => setOpen(!open)} logo={
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 rounded-lg bg-gradient-pitch flex items-center justify-center shadow-pitch">
+          <SportsSoccerIcon className="text-white w-5 h-5" />
+        </div>
+        <span className='text-xl font-bold leading-none text-gradient-pitch tracking-tight'>PELEGO</span>
+      </div>
+    }>
       <MenuExpansibleContent>
         <MenuExpansibleItem href="/" label="Home" icon={<HomeIcon />} active={pathname === '/'} />
         <MenuExpansibleItem href="/players" label="Jogadores" icon={<PeopleAltIcon />} active={pathname.includes('players')} />

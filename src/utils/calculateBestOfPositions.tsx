@@ -70,12 +70,20 @@ export const calculateBestOfEachPosition = (weeks: WeekResponse[]): CalculateBes
       });
   });
 
+  // Minimum participation: 50% + 1 of weeks
+  const requiredWeeks = Math.ceil(weeks.length / 2);
+
   const atackers: PlayerResumeData[] = [];
   const midfielders: PlayerResumeData[] = [];
   const defenders: PlayerResumeData[] = [];
   const goalkeepers: PlayerResumeData[] = [];
 
-  allPlayersGoalsAgainstCount.forEach((playerSummary) => {
+  // Filter players with minimum participation
+  const eligiblePlayers = allPlayersGoalsAgainstCount.filter(
+    player => player.weeksPlayed >= requiredWeeks
+  );
+
+  eligiblePlayers.forEach((playerSummary) => {
     const playerId = Object.keys(allPlayersGoalsMap).find(
       id => allPlayersGoalsMap[id].name === playerSummary.playerName
     );
@@ -127,3 +135,4 @@ export const calculateBestOfEachPosition = (weeks: WeekResponse[]): CalculateBes
     goalkeepers,
   };
 };
+

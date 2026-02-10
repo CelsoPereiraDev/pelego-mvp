@@ -29,10 +29,28 @@ export async function getWeeksByDate(year: string, month?: string): Promise<Week
   return response.json();
 }
 
-export async function deleteWeek(weekId: string) {
-  const queryRequest = new QueryRequest<void>(BASE_URL, '');
-  queryRequest.addDefaultHeaders();
-  return queryRequest.delete(`weeks/${weekId}`);
+interface DeleteWeekResponse {
+  message: string;
+  deletedWeekId: string;
+  deletedWeekDate: string;
+  championPlayersAffected: number;
+  totalPlayersAffected: number;
+}
+
+export async function deleteWeek(weekId: string): Promise<DeleteWeekResponse> {
+  const response = await fetch(`${BASE_URL}/weeks/${weekId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Erro ao deletar semana');
+  }
+
+  return await response.json();
 }
 
 

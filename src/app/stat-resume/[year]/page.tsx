@@ -2,9 +2,7 @@
 
 import { ChartBar } from '@/components/BarChart';
 import { ChartConfig } from '@/components/ui/chart';
-import { usePlayers } from '@/services/player/usePlayers';
-import { useWeeksByDate } from '@/services/weeks/useWeeksByDate';
-import { calculateMonthResume, MonthResumeProps } from '@/utils/calculateMonthResume';
+import { useMonthResume } from '@/services/stats/useMonthResume';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BatteryAlertIcon from '@mui/icons-material/BatteryAlert';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -12,33 +10,22 @@ import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 import StarIcon from '@mui/icons-material/Star';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 const MonthResume: React.FC = () => {
   const params = useParams();
   const year = params.year as string;
-  const { players } = usePlayers()
-  const { weeks, isLoading, isError } = useWeeksByDate(year);
-
-  const [monthResumeProps, setMonthResumeProps] = useState<MonthResumeProps | null>(null);
-
-
-  useEffect(() => {
-    if (weeks && !isLoading && !isError) {
-      const stats = calculateMonthResume(weeks);
-      setMonthResumeProps(stats);
-    }
-  }, [weeks, isLoading, isError]);
+  const { monthResume, isLoading, error } = useMonthResume(year);
 
   if (isLoading) {
     return <div className="text-[hsl(var(--foreground))]">Loading...</div>;
   }
 
-  if (isError) {
+  if (error) {
     return <div className="text-[hsl(var(--foreground))]">Error loading data</div>;
   }
 
-  if (!monthResumeProps) return null;
+  if (!monthResume) return null;
 
   const chartConfig: ChartConfig = {
     max: {
@@ -79,7 +66,7 @@ const MonthResume: React.FC = () => {
       </h1>
       <div className='grid grid-cols-3 gap-4'>
       {categories.map((category) => {
-        let sortedData = monthResumeProps[category.key]
+        let sortedData = monthResume[category.key]
           .map(item => ({
             name: item.name,
             value: item.count,

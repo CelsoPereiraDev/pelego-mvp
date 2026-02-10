@@ -10,10 +10,11 @@ interface MatchFormProps {
   control: Control<CreateMatch>;
   teamFields: FieldArrayWithId<CreateMatch, "teams", "id">[];
   players: PlayerResponse[];
-  removeMatch: UseFieldArrayRemove
+  removeMatch: UseFieldArrayRemove;
+  disabled?: boolean;
 }
 
-export const MatchForm = ({ index, control, teamFields, players,removeMatch }: MatchFormProps) => {
+export const MatchForm = ({ index, control, teamFields, players, removeMatch, disabled = false }: MatchFormProps) => {
   const homeTeamId = useWatch({ control, name: `matches.${index}.homeTeamId` });
   const awayTeamId = useWatch({ control, name: `matches.${index}.awayTeamId` });
   const homeGoals = useWatch({ control, name: `matches.${index}.homeGoals.goalsCount` });

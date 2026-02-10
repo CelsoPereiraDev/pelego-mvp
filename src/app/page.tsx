@@ -107,7 +107,7 @@ export default function Home() {
             Selecione os jogadores e a quantidade de times para gerar
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 w-max">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
               Selecionar Jogadores
@@ -182,7 +182,7 @@ export default function Home() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
                   Primeiro Jogador
@@ -232,8 +232,8 @@ export default function Home() {
             {teams.map((team, index) => (
               <Card key={index} className="overflow-hidden">
                 <CardHeader className="bg-gradient-primary text-primary-foreground">
-                  <CardTitle className="text-xl">Time {index + 1}</CardTitle>
-                  <CardDescription className="text-primary-foreground/80 font-medium">
+                  <CardTitle className="text-xl text-black">Time {index + 1}</CardTitle>
+                  <CardDescription className="text-black font-medium">
                     Overall: {calculateTeamOverall(team.players).toFixed(1)}
                   </CardDescription>
                 </CardHeader>

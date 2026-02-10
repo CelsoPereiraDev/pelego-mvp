@@ -1,6 +1,12 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { SectionHeader } from '@/components/ui/section-header';
+import { WeekHeader } from '@/components/week/WeekHeader';
+import { TeamCard } from '@/components/week/TeamCard';
+import { StatCard } from '@/components/week/StatCard';
+import { MatchCard } from '@/components/match/MatchCard';
 import { useWeek } from '@/services/weeks/useWeek';
 import { MatchResponse } from '@/types/match';
 import Looks3OutlinedIcon from '@mui/icons-material/Looks3Outlined';
@@ -121,142 +127,131 @@ const WeekDetails: React.FC = () => {
   const renderIconForTeam = (index: number) => {
     switch (index) {
       case 1:
-        return <LooksOneIcon className="text-[hsl(var(--destructive))] min-h-9 min-w-9" />;
+        return <LooksOneIcon className="text-destructive h-9 w-9" />;
       case 2:
-        return <LooksTwoIcon className="text-[hsl(var(--foreground))] min-h-9 min-w-9" />;
+        return <LooksTwoIcon className="text-foreground h-9 w-9" />;
       case 3:
-        return <Looks3OutlinedIcon className="text-[hsl(var(--foreground))] min-h-9 min-w-9" />;
+        return <Looks3OutlinedIcon className="text-foreground h-9 w-9" />;
       default:
         return null;
     }
   };
 
+  const formattedDate = week?.date ? format(new Date(week.date), 'dd/MM/yy') : 'Data indisponível';
+
   return (
-    <div className="h-screen bg-[hsl(var(--background))] w-screen flex justify-start flex-col p-12 items-center gap-7">
-      <h1 className="text-3xl text-center mb-9 text-[hsl(var(--foreground))]">Detalhes da Semana</h1>
-      <Card className="min-w-[800px] p-6 h-full rounded-lg overflow-auto">
-        <CardHeader>
-          <CardTitle className="text-[hsl(var(--foreground))]">
-            Data: {week?.date ? format(new Date(week.date), 'dd/MM/yy') : 'Data indisponível'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <h3 className="text-[hsl(var(--foreground))] text-xl">Times da semana</h3>
-          <div className="flex flex-row justify-between">
-            <ul className="flex flex-row gap-6">
-              {week?.teams.map((team, index) => (
-                <li key={team.id} className="flex flex-col gap-2">
-                  <h4 className="text-lg flex items-center text-[hsl(var(--foreground))]">Time {index + 1}</h4>
-                  <ul className="flex flex-col gap-1 text-[hsl(var(--muted-foreground))]">
-                    {team.players.map((player) => (
-                      <li key={player.id}>{player.player.name}</li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-            <div className="flex flex-row gap-8">
-              <div>
-                <h3 className="text-[hsl(var(--foreground))] text-lg">Artilheiros</h3>
-                {topScorers.map((player, index) => (
-                  <ol key={index} className="text-[hsl(var(--foreground))]">
-                    <li>
-                      {player.name} - {player.goals} {player.goals === 1 ? 'gol' : 'gols'}
-                    </li>
-                  </ol>
+    <div className="min-h-screen bg-background w-full flex justify-start flex-col p-4 md:p-8 lg:p-12 items-center">
+      <div className="w-full max-w-7xl space-y-6">
+        <h1 className="text-3xl md:text-4xl text-center font-bold text-foreground mb-6">
+          Detalhes da Semana
+        </h1>
+
+        <Card className="w-full p-4 md:p-6 rounded-lg">
+          <WeekHeader date={formattedDate} weekId={weekId as string} />
+
+          <Separator className="my-6" />
+
+          <CardContent className="p-0 space-y-8">
+            {/* Seção Times da Semana */}
+            <section>
+              <SectionHeader
+                title="Times da Semana"
+                icon="📋"
+                description={`${week?.teams.length} times formados`}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {week?.teams.map((team, index) => (
+                  <TeamCard
+                    key={team.id}
+                    teamNumber={index + 1}
+                    players={team.players}
+                    teamIcon={renderIconForTeam(index + 1)}
+                  />
                 ))}
               </div>
-              <div>
-                <h3 className="text-[hsl(var(--foreground))] text-lg">Assistências</h3>
-                {topAssistPlayers.map((player, index) => (
-                  <ol key={index} className="text-[hsl(var(--foreground))]">
-                    <li>
-                      {player.name} - {player.assists} {player.assists === 1 ? 'assist' : 'assists'}
-                    </li>
-                  </ol>
+            </section>
+
+            <Separator />
+
+            {/* Seção Estatísticas */}
+            <section>
+              <SectionHeader
+                title="Estatísticas da Semana"
+                icon="📊"
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <StatCard
+                  title="Artilheiros"
+                  icon="⚽"
+                  variant="goal"
+                  data={topScorers.map((player) => ({
+                    name: player.name,
+                    value: player.goals,
+                    label: `${player.goals} ${player.goals === 1 ? 'gol' : 'gols'}`,
+                  }))}
+                />
+
+                <StatCard
+                  title="Assistências"
+                  icon="🅰️"
+                  variant="assist"
+                  data={topAssistPlayers.map((player) => ({
+                    name: player.name,
+                    value: player.assists,
+                    label: `${player.assists} ${player.assists === 1 ? 'assist' : 'assists'}`,
+                  }))}
+                />
+
+                <StatCard
+                  title="Gols Contra"
+                  icon="🔴"
+                  variant="ownGoal"
+                  data={ownGoalsList.map((player) => ({
+                    name: player.name,
+                    value: player.ownGoals,
+                    label: `${player.ownGoals} ${player.ownGoals === 1 ? 'gol contra' : 'gols contra'}`,
+                  }))}
+                />
+
+                <StatCard
+                  title="Classificação"
+                  icon="🏆"
+                  variant="ranking"
+                  data={teamRankings.map((team) => ({
+                    name: team.name,
+                    value: team.points,
+                    label: `${team.points} pontos`,
+                  }))}
+                />
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Seção Partidas */}
+            <section>
+              <SectionHeader
+                title="Partidas da Semana"
+                icon="⚽"
+                description={`${sortedMatches.length} partidas realizadas`}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {sortedMatches.map((match, index) => (
+                  <MatchCard
+                    key={match.id}
+                    match={match}
+                    matchNumber={index + 1}
+                    homeTeamNumber={teamIdToIndexMap[match.homeTeamId]}
+                    awayTeamNumber={teamIdToIndexMap[match.awayTeamId]}
+                    homeTeamIcon={renderIconForTeam(teamIdToIndexMap[match.homeTeamId])}
+                    awayTeamIcon={renderIconForTeam(teamIdToIndexMap[match.awayTeamId])}
+                  />
                 ))}
               </div>
-              <div>
-                <h3 className="text-[hsl(var(--foreground))] text-lg">Gols Contra</h3>
-                {ownGoalsList.map((player, index) => (
-                  <ol key={index} className="text-[hsl(var(--foreground))]">
-                    <li>
-                      {player.name} - {player.ownGoals} {player.ownGoals === 1 ? 'gol contra' : 'gols contra'}
-                    </li>
-                  </ol>
-                ))}
-              </div>
-              <div>
-                <h3 className="text-[hsl(var(--foreground))] text-lg">Classificação</h3>
-                {teamRankings.map((team, index) => (
-                  <ol key={index} className="text-[hsl(var(--foreground))]">
-                    <li>
-                      {team.name} - {team.points} pontos
-                    </li>
-                  </ol>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row gap-36">
-            <div>
-              <ul className="grid grid-cols-5 gap-2">
-                {sortedMatches.map((match, index) => {
-                  const aggregatedGoals = match.goals.reduce((acc, goal) => {
-                    let key = '';
-                    let name = '';
-                    if (goal.player) {
-                      key = goal.player.id;
-                      name = goal.player.name;
-                    } else if (goal.ownGoalPlayer) {
-                      key = goal.ownGoalPlayer.id + '_og';
-                      name = goal.ownGoalPlayer.name + ' (GC)';
-                    }
-                    if (!acc[key]) {
-                      acc[key] = { name, goals: 0 };
-                    }
-                    acc[key].goals += goal.goals;
-                    return acc;
-                  }, {} as Record<string, { name: string; goals: number }>);
-                  return (
-                    <li key={match.id} className="flex flex-col gap-2 border-[1px] rounded border-[hsl(var(--primary))] p-2">
-                      <div className="flex flex-col gap-2">
-                        <h4 className="text-base text-[hsl(var(--foreground))]">Partida {index + 1}</h4>
-                        <div className="flex flex-row gap-2 items-center">
-                          <p className="text-sm text-[hsl(var(--muted-foreground))]">
-                            Time {teamIdToIndexMap[match.homeTeamId]}{' '}
-                            <span className="min-w-9 min-h-9">{renderIconForTeam(teamIdToIndexMap[match.homeTeamId])}</span>{' '}
-                            <span className="text-base text-[hsl(var(--foreground))] font-extrabold">
-                              {match.result?.homeGoals}
-                            </span>
-                          </p>
-                          <span className="text-xs text-[hsl(var(--muted-foreground))] font-extralight"> X </span>
-                          <p className="text-sm text-[hsl(var(--muted-foreground))]">
-                            <span className="text-base text-[hsl(var(--foreground))] font-extrabold">
-                              {match.result?.awayGoals}
-                            </span>{' '}
-                            {renderIconForTeam(teamIdToIndexMap[match.awayTeamId])}{' '}
-                            Time {teamIdToIndexMap[match.awayTeamId]}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-row gap-2 items-center">
-                        <ul className="flex flex-col gap-1">
-                          {Object.values(aggregatedGoals).map((goalData, i) => (
-                            <li key={i} className="text-xs text-[hsl(var(--muted-foreground))]">
-                              {goalData.name} - {goalData.goals} {goalData.goals === 1 ? 'gol' : 'gols'}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </section>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

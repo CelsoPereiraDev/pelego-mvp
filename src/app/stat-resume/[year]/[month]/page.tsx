@@ -5,9 +5,8 @@ import SelectWithSearch from '@/components/SelectWithSearch';
 import { Button } from '@/components/ui/button';
 import { ChartConfig } from '@/components/ui/chart';
 import { usePlayers } from '@/services/player/usePlayers';
-import { useWeeksByDate } from '@/services/weeks/useWeeksByDate';
+import { useMonthResume } from '@/services/stats/useMonthResume';
 import { Player } from '@/types/player';
-import { calculateMonthResume, MonthResumeProps } from '@/utils/calculateMonthResume';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BatteryAlertIcon from '@mui/icons-material/BatteryAlert';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -18,47 +17,26 @@ import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 import StarIcon from '@mui/icons-material/Star';
 
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const MonthResume: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const year = parseInt(params.year as string, 10);
   const month = params.month ? parseInt(params.month as string, 10) : undefined;
-  const { weeks, isLoading, isError } = useWeeksByDate(year.toString(), month?.toString());
 
   const { players } = usePlayers();
-
-  const [monthResumeProps, setMonthResumeProps] = useState<MonthResumeProps | null>(null);
   const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
 
-  useEffect(() => {
-    if (weeks && !isLoading && !isError) {
-      const excludedPlayerNames = selectedPlayers.map(player => player.name);
-      const stats = calculateMonthResume(weeks, ...excludedPlayerNames);
-      
-      // Garantir que cada categoria tenha pelo menos 5 jogadores
-      const ensureMinimumFivePlayers = (category) => {
-        if (category.length < 5) {
-          const sortedCategory = category.sort((a, b) => b.count - a.count);
-          const playersToAdd = sortedCategory.slice(0, 5 - category.length);
-          return [...category, ...playersToAdd];
-        }
-        return category;
-      };
+  // Get excluded player IDs
+  const excludedPlayerIds = selectedPlayers.map(player => player.id);
 
-      const adjustedStats: MonthResumeProps = {
-        assists: ensureMinimumFivePlayers(stats.assists),
-        scorer: ensureMinimumFivePlayers(stats.scorer),
-        mvp: ensureMinimumFivePlayers(stats.mvp),
-        lvp: ensureMinimumFivePlayers(stats.lvp),
-        bestDefender: ensureMinimumFivePlayers(stats.bestDefender),
-        topPointer: ensureMinimumFivePlayers(stats.topPointer),
-      };
-
-      setMonthResumeProps(adjustedStats);
-    }
-  }, [weeks, isLoading, isError, selectedPlayers]);
+  // Call backend API with excluded player IDs
+  const { monthResume, isLoading, error } = useMonthResume(
+    year.toString(),
+    month?.toString(),
+    excludedPlayerIds
+  );
 
   function mapMonthNumberToText(monthNumber: number) {
     const months = [
@@ -72,11 +50,11 @@ const MonthResume: React.FC = () => {
     return <div className="text-[hsl(var(--foreground))]">Loading...</div>;
   }
 
-  if (isError) {
+  if (error) {
     return <div className="text-[hsl(var(--foreground))]">Error loading data</div>;
   }
 
-  if (!monthResumeProps) return null;
+  if (!monthResume) return null;
 
   const chartConfig: ChartConfig = {
     max: {
@@ -152,11 +130,11 @@ const MonthResume: React.FC = () => {
       
       <div className='grid grid-cols-3 gap-4'>
         {categories.map((category) => {
-  let sortedData = monthResumeProps[category.key]
+  let sortedData = monthResume[category.key as keyof typeof monthResume]
     .map(item => ({
       name: item.name,
       value: item.count,
-      fill: chartConfig.max.color // Cor padrão como exemplo
+      fill: chartConfig.max.color || 'hsl(261.2 72.6% 22.9%)' // Cor padrão
     }));
 
   // Ordena os dados de acordo com a configuração da categoria
@@ -178,11 +156,11 @@ const MonthResume: React.FC = () => {
     if (item.value !== lastValue) {
       lastColorIndex = index;
     }
-    if (lastColorIndex === 0) item.fill = chartConfig.max.color;
-    else if (lastColorIndex === 1) item.fill = chartConfig.secondHighest.color;
-    else if (lastColorIndex === 2) item.fill = chartConfig.thirdHighest.color;
-    else if (lastColorIndex === 3) item.fill = chartConfig.fourthHighest.color;
-    else item.fill = chartConfig.fifthHighest.color;
+    if (lastColorIndex === 0) item.fill = chartConfig.max.color || 'hsl(261.2 72.6% 22.9%)';
+    else if (lastColorIndex === 1) item.fill = chartConfig.secondHighest.color || 'hsl(263.5 67.4% 34.9%)';
+    else if (lastColorIndex === 2) item.fill = chartConfig.thirdHighest.color || 'hsl(263.4 69.3% 42.2%)';
+    else if (lastColorIndex === 3) item.fill = chartConfig.fourthHighest.color || 'hsl(263.4 70% 50.4%)';
+    else item.fill = chartConfig.fifthHighest.color || 'hsl(262.1 83.3% 57.8%)';
 
     lastValue = item.value;
   });
